@@ -16,10 +16,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 
 @RestController
@@ -50,7 +49,7 @@ public class AuthController {
         adminEntity.setPassword(passwordEncoder.encode(adminAuthDto.getPassword()));
 
         adminRepo.save(adminEntity);
-        return new ResponseEntity<String>("User Register successful !! ", HttpStatus.CREATED);
+        return new ResponseEntity<String>("Admin Registration successful !! ", HttpStatus.CREATED);
     }
 
     @PostMapping("api/v1/adminLogin")
@@ -107,4 +106,5 @@ public class AuthController {
         responseDto.setUser(userEntity.getName(), userEntity.getEmail(), userEntity.getId());
         return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.OK);
     }
+
 }
