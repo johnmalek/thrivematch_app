@@ -107,4 +107,27 @@ public class AuthController {
         return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.OK);
     }
 
+    @PutMapping("api/v1/updateUser/{id}")
+    public ResponseEntity<SuccessAndMessage> updateUser(@PathVariable Integer id, @RequestBody UserUpdate userUpdateDto, @RequestHeader(name="Authorization") String token) {
+        System.out.println("userUpdate");
+        SuccessAndMessage response = new SuccessAndMessage();
+        if(!(userRepo.existsById(id))) {
+            response.setMessage("User does not exist");
+            response.setSuccess(false);
+            return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.BAD_REQUEST);
+        }
+        Optional<UserEntity> user = userRepo.findById(id);
+        UserEntity userEntity = user.get();
+        userEntity.setName(userUpdateDto.getName());
+        userEntity.setEmail(userUpdateDto.getEmail());
+        userEntity.setPassword(passwordEncoder.encode(userUpdateDto.getPassword()));
+        userEntity.setStatus(true);
+        userRepo.save(userEntity);
+        response.setMessage("User updated successfully");
+        response.setSuccess(true);
+        return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
+    }
+
+
+
 }
