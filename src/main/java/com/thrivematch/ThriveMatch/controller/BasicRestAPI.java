@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/public")
 public class BasicRestAPI {
     @GetMapping("/")
-    public ResponseEntity<String> publicHome(){
-        return new ResponseEntity<String>("Ok: Hello from secured endpoint",HttpStatus.OK);
+    public String publicHome(){
+//        return new ResponseEntity<String>("Ok: Hello from secured endpoint",HttpStatus.OK);
+        return "Hello world";
     }
 }
