@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -62,10 +63,15 @@ public class AuthController {
 
         String token = jwtGenerator.generateToken(authentication,UserType.ADMIN.toString());
         AdminLoginResponse responseDto = new AdminLoginResponse();
+        AdminEntity adminEntity = adminRepo.findByUsername(adminAuthDto.getUsername()).orElseThrow();
+        if(passwordEncoder.matches(adminAuthDto.getPassword(), adminEntity.getPassword())){
+            responseDto.setSuccess(false);
+            responseDto.setMessage("incorrect username or password");
+            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
         responseDto.setSuccess(true);
         responseDto.setMessage("login successful !!");
         responseDto.setToken(token);
-        AdminEntity adminEntity = adminRepo.findByUsername(adminAuthDto.getUsername()).orElseThrow();
         responseDto.setAdmin(adminEntity.getUsername(), adminEntity.getId());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -99,10 +105,16 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication, UserType.USER.toString());
         UserLoginResponse responseDto = new UserLoginResponse();
+        UserEntity userEntity = userRepo.findByEmail(userLoginDto.getEmail()).orElseThrow();
+
+        if(passwordEncoder.matches(userLoginDto.getPassword(), userEntity.getPassword())){
+            responseDto.setSuccess(false);
+            responseDto.setMessage("incorrect username or password");
+            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
         responseDto.setSuccess(true);
         responseDto.setMessage("login successful !!");
         responseDto.setToken(token);
-        UserEntity userEntity = userRepo.findByEmail(userLoginDto.getEmail()).orElseThrow();
         responseDto.setUser(userEntity.getName(), userEntity.getEmail(), userEntity.getId());
         return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.OK);
     }
