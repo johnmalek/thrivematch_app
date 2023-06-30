@@ -64,10 +64,10 @@ public class AuthController {
         String token = jwtGenerator.generateToken(authentication,UserType.ADMIN.toString());
         AdminLoginResponse responseDto = new AdminLoginResponse();
         AdminEntity adminEntity = adminRepo.findByUsername(adminAuthDto.getUsername()).orElseThrow();
-        if(!(passwordEncoder.matches(adminAuthDto.getPassword(), adminEntity.getPassword()))){
+        if(!passwordEncoder.matches(adminAuthDto.getPassword(), adminEntity.getPassword())){
             responseDto.setSuccess(false);
             responseDto.setMessage("incorrect username or password");
-            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
         }
         responseDto.setSuccess(true);
         responseDto.setMessage("login successful !!");
@@ -107,10 +107,10 @@ public class AuthController {
         UserLoginResponse responseDto = new UserLoginResponse();
         UserEntity userEntity = userRepo.findByEmail(userLoginDto.getEmail()).orElseThrow();
 
-        if(!(passwordEncoder.matches(userLoginDto.getPassword(), userEntity.getPassword()))){
+        if(!passwordEncoder.matches(userLoginDto.getPassword(), userEntity.getPassword())){
             responseDto.setSuccess(false);
             responseDto.setMessage("incorrect username or password");
-            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.UNAUTHORIZED);
         }
         responseDto.setSuccess(true);
         responseDto.setMessage("login successful !!");
