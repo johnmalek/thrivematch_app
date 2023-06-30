@@ -64,16 +64,19 @@ public class AuthController {
         String token = jwtGenerator.generateToken(authentication,UserType.ADMIN.toString());
         AdminLoginResponse responseDto = new AdminLoginResponse();
         AdminEntity adminEntity = adminRepo.findByUsername(adminAuthDto.getUsername()).orElseThrow();
-        if(!passwordEncoder.matches(adminAuthDto.getPassword(), adminEntity.getPassword())){
-            responseDto.setSuccess(false);
-            responseDto.setMessage("incorrect username or password");
-            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+        String encodedPassword = adminEntity.getPassword();
+        String passedPassword = adminAuthDto.getPassword();
+        boolean passwordsMatch = passwordEncoder.matches(passedPassword, encodedPassword);
+        if(passwordsMatch){
+            responseDto.setSuccess(true);
+            responseDto.setMessage("login successful!");
+            responseDto.setToken(token);
+            responseDto.setAdmin(adminEntity.getUsername(), adminEntity.getId());
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
-        responseDto.setSuccess(true);
-        responseDto.setMessage("login successful !!");
-        responseDto.setToken(token);
-        responseDto.setAdmin(adminEntity.getUsername(), adminEntity.getId());
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        responseDto.setSuccess(false);
+        responseDto.setMessage("Incorrect username or password");
+        return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("api/v1/userRegister")
@@ -106,17 +109,19 @@ public class AuthController {
         String token = jwtGenerator.generateToken(authentication, UserType.USER.toString());
         UserLoginResponse responseDto = new UserLoginResponse();
         UserEntity userEntity = userRepo.findByEmail(userLoginDto.getEmail()).orElseThrow();
-
-        if(!passwordEncoder.matches(userLoginDto.getPassword(), userEntity.getPassword())){
-            responseDto.setSuccess(false);
-            responseDto.setMessage("incorrect username or password");
-            return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.UNAUTHORIZED);
+        String encodedPassword = userEntity.getPassword();
+        String passedPassword = userLoginDto.getPassword();
+        boolean passwordsMatch = passwordEncoder.matches(passedPassword, encodedPassword);
+        if(passwordsMatch){
+            responseDto.setSuccess(true);
+            responseDto.setMessage("login successful !!");
+            responseDto.setToken(token);
+            responseDto.setUser(userEntity.getName(), userEntity.getEmail(), userEntity.getId());
+            return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.OK);
         }
-        responseDto.setSuccess(true);
-        responseDto.setMessage("login successful !!");
-        responseDto.setToken(token);
-        responseDto.setUser(userEntity.getName(), userEntity.getEmail(), userEntity.getId());
-        return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.OK);
+        responseDto.setSuccess(false);
+        responseDto.setMessage("incorrect username or password");
+        return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.UNAUTHORIZED);
     }
 
     @PutMapping("api/v1/updateUser/{id}")
@@ -139,7 +144,4 @@ public class AuthController {
         response.setSuccess(true);
         return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
     }
-
-
-
 }
