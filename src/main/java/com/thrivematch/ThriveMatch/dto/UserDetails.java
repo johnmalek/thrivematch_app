@@ -1,10 +1,11 @@
 package com.thrivematch.ThriveMatch.dto;
 
-public class UserUpdate {
+import java.util.ArrayList;
 
+public class UserDetails{
     private String username;
     private String email;
-    private String password;
+    private Integer id;
 
     public String getUsername() {
         return username;
@@ -14,6 +15,7 @@ public class UserUpdate {
         this.username = username;
     }
 
+
     public String getEmail() {
         return email;
     }
@@ -22,11 +24,11 @@ public class UserUpdate {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public Integer getId() {
+        return id;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
