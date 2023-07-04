@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/adminRegister").permitAll()
                 .requestMatchers("/api/v1/adminLogin").permitAll()
                 .requestMatchers("/api/v1/userRegister").permitAll()
+                .requestMatchers("/api/v1/profiles").permitAll()
                 .requestMatchers("/api/v1/userLogin").permitAll()
                 .requestMatchers("/api/v1/updateUser").permitAll()
                 .requestMatchers("/api/v1/admin/**").hasAuthority(UserType.ADMIN.toString())
