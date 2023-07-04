@@ -22,7 +22,7 @@ public class UserProfileService {
 
     public String saveFile(MultipartFile file) throws IOException{
         String fileName = file.getOriginalFilename();
-        String uploadDirectory = "//home//johnmalek//Desktop/Malek//SpringBoot//ThriveMatch//src//main//resources//static//Files//";
+        String uploadDirectory = "/home/johnmalek/Desktop/Malek/SpringBoot/ThriveMatch/src/main/resources/static/Files/";
         String filePath = uploadDirectory+fileName;
 
         file.transferTo(new File(filePath));
