@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 public class InvestorEntity {
@@ -19,6 +20,18 @@ public class InvestorEntity {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         private LocalDate yearFounded;
         private String picturePath;
+
+
+        @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+        @JoinTable(name = "investor_startups",
+                joinColumns = {
+                @JoinColumn(name = "investorId", referencedColumnName = "id")
+            },
+                inverseJoinColumns = {
+                @JoinColumn(name = "startupId", referencedColumnName = "id")
+                }
+        )
+        private Set<StartUpEntity> startups;
 
         public Integer getId() {
             return id;
@@ -68,27 +81,27 @@ public class InvestorEntity {
             this.email = email;
         }
 
-    public String getAddress() {
-        return address;
-    }
+        public String getAddress() {
+            return address;
+        }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+        public void setAddress(String address) {
+            this.address = address;
+        }
 
-    public String getPoBox() {
-        return poBox;
-    }
+        public String getPoBox() {
+            return poBox;
+        }
 
-    public void setPoBox(String poBox) {
-        this.poBox = poBox;
-    }
+        public void setPoBox(String poBox) {
+            this.poBox = poBox;
+        }
 
-    public LocalDate getYearFounded() {
-        return yearFounded;
-    }
+        public LocalDate getYearFounded() {
+            return yearFounded;
+        }
 
-    public void setYearFounded(LocalDate yearFounded) {
-        this.yearFounded = yearFounded;
-    }
+        public void setYearFounded(LocalDate yearFounded) {
+            this.yearFounded = yearFounded;
+        }
 }

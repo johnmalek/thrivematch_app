@@ -4,6 +4,8 @@ import java.io.IOException;
 
 
 import com.thrivematch.ThriveMatch.model.UserType;
+import com.thrivematch.ThriveMatch.repository.TokenRepo;
+import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,19 +18,28 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import javax.validation.constraints.NotNull;
+
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtGenerator jwtGenerator;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
+    @Autowired
+    private TokenRepo tokenRepo;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(
+            @NotNull HttpServletRequest request,
+            @NotNull HttpServletResponse response,
+            @NotNull FilterChain filterChain)
             throws ServletException, IOException {
         String token = getJWTfromRequest(request);
-        if (token != null && jwtGenerator.validateToken(token)) {
+        var isTokenValid = tokenRepo.findByToken(token)
+                .map(t -> !t.isExpired() && !t.isRevoked())
+                .orElse(false);
+        if (token != null && jwtGenerator.validateToken(token) && isTokenValid) {
             String username = jwtGenerator.getUsernameFromJWT(token);
             String userType = jwtGenerator.getUserTypeFromJWT(token);
             customUserDetailsService.setUserType(UserType.valueOf(userType));

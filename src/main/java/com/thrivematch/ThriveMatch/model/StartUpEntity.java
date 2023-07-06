@@ -1,12 +1,10 @@
 package com.thrivematch.ThriveMatch.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 public class StartUpEntity {
@@ -22,6 +20,9 @@ public class StartUpEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate yearFounded;
     private String picturePath;
+
+    @ManyToMany(mappedBy = "startups", fetch = FetchType.LAZY)
+    private Set<InvestorEntity> investors;
 
     public Integer getId() {
         return id;

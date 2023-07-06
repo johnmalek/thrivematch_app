@@ -1,10 +1,9 @@
 package com.thrivematch.ThriveMatch.service;
 
 import com.thrivematch.ThriveMatch.dto.*;
-import com.thrivematch.ThriveMatch.model.AdminEntity;
-import com.thrivematch.ThriveMatch.model.UserEntity;
-import com.thrivematch.ThriveMatch.model.UserType;
+import com.thrivematch.ThriveMatch.model.*;
 import com.thrivematch.ThriveMatch.repository.AdminRepo;
+import com.thrivematch.ThriveMatch.repository.TokenRepo;
 import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.security.CustomUserDetailsService;
 import com.thrivematch.ThriveMatch.security.JwtGenerator;
@@ -15,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -34,6 +34,8 @@ public class UserService {
     private AdminRepo adminRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private TokenRepo tokenRepo;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -82,18 +84,18 @@ public class UserService {
         return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
     }
 
-    public ResponseEntity<SuccessAndMessage> userRegister(UserRegister studentRegisterDto) {
+    public ResponseEntity<SuccessAndMessage> userRegister(UserRegister userRegisterDto) {
         System.out.println("userRegister");
         SuccessAndMessage response = new SuccessAndMessage();
-        if(userRepo.existsByEmail(studentRegisterDto.getEmail())) {
+        if(userRepo.existsByEmail(userRegisterDto.getEmail())) {
             response.setMessage("Email is already registered !!");
             response.setSuccess(false);
             return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.BAD_REQUEST);
         }
         UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(studentRegisterDto.getUsername());
-        userEntity.setPassword(passwordEncoder.encode(studentRegisterDto.getPassword()));
-        userEntity.setEmail(studentRegisterDto.getEmail());
+        userEntity.setUsername(userRegisterDto.getUsername());
+        userEntity.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
+        userEntity.setEmail(userRegisterDto.getEmail());
         userEntity.setStatus(true);
         userRepo.save(userEntity);
         response.setMessage("User Created Successfully !!");
@@ -118,6 +120,8 @@ public class UserService {
             responseDto.setMessage("login successful !!");
             responseDto.setToken(token);
             responseDto.setUser(userEntity.getUsername(), userEntity.getEmail(), userEntity.getId());
+            revokeAllUserTokens(userEntity);
+            saveUserToken(userEntity, token);
             return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.OK);
         }
         responseDto.setSuccess(false);
@@ -145,4 +149,25 @@ public class UserService {
         return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
     }
 
+    private void saveUserToken(UserEntity user, String jwtToken){
+        var token = TokenEntity.builder()
+                .user(user)
+                .expired(false)
+                .revoked(false)
+                .tokenType(TokenType.BEARER)
+                .token(jwtToken)
+                .build();
+        tokenRepo.save(token);
+    }
+
+    private void revokeAllUserTokens(UserEntity user){
+        var validUserTokens = tokenRepo.findAllValidTokensByUser(user.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(t -> {
+            t.setRevoked(true);
+            t.setExpired(true);
+        });
+        tokenRepo.saveAll(validUserTokens);
+    }
 }

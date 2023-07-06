@@ -1,6 +1,7 @@
 package com.thrivematch.ThriveMatch.security;
 
 import com.thrivematch.ThriveMatch.model.UserType;
+import com.thrivematch.ThriveMatch.service.LogOutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,6 +26,9 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthEntryPoint jwtAuthEntryPoint;
+
+    @Autowired
+    private LogOutService logOutService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,7 +54,14 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                http.logout()
+                        .logoutUrl("/api/v1/logout")
+                        .addLogoutHandler(logOutService)
+                        .logoutSuccessHandler(
+                                (request, response, authentication) ->
+                                SecurityContextHolder.clearContext()
+                        );
         return http.build();
     }
 

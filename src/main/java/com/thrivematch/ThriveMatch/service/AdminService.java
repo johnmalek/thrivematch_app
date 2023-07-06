@@ -40,44 +40,6 @@ public class AdminService {
     private JwtGenerator jwtGenerator;
 
 
-    public ResponseEntity<String> adminRegister(AdminAuth adminAuthDto) {
-        if(adminRepo.existsByUsername(adminAuthDto.getUsername())) {
-            return new ResponseEntity<String>("Username is taken !! ", HttpStatus.BAD_REQUEST);
-        }
-        AdminEntity adminEntity = new AdminEntity();
-        adminEntity.setUsername(adminAuthDto.getUsername());
-        adminEntity.setPassword(passwordEncoder.encode(adminAuthDto.getPassword()));
-
-        adminRepo.save(adminEntity);
-        return new ResponseEntity<String>("Admin Registration successful !! ", HttpStatus.CREATED);
-    }
-
-
-    public ResponseEntity<AdminLoginResponse> adminLogin(@RequestBody AdminAuth adminAuthDto) {
-        System.out.println("adminLogin");
-        customUserDetailsService.setUserType(UserType.ADMIN);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(adminAuthDto.getUsername(), adminAuthDto.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String token = jwtGenerator.generateToken(authentication,UserType.ADMIN.toString());
-        AdminLoginResponse responseDto = new AdminLoginResponse();
-        AdminEntity adminEntity = adminRepo.findByUsername(adminAuthDto.getUsername()).orElseThrow();
-        String encodedPassword = adminEntity.getPassword();
-        String passedPassword = adminAuthDto.getPassword();
-        boolean passwordsMatch = passwordEncoder.matches(passedPassword, encodedPassword);
-        if(passwordsMatch){
-            responseDto.setSuccess(true);
-            responseDto.setMessage("login successful!");
-            responseDto.setToken(token);
-            responseDto.setAdmin(adminEntity.getUsername(), adminEntity.getId());
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        }
-        responseDto.setSuccess(false);
-        responseDto.setMessage("Incorrect username or password");
-        return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
-    }
-
     public ResponseEntity<SuccessAndMessage> registerUser(UserRegister userRegisterDto) {
         SuccessAndMessage response = new SuccessAndMessage();
         if(userRepo.existsByEmail(userRegisterDto.getEmail())) {
