@@ -1,10 +1,9 @@
 package com.thrivematch.ThriveMatch.service;
 
 import com.thrivematch.ThriveMatch.dto.*;
-import com.thrivematch.ThriveMatch.model.AdminEntity;
-import com.thrivematch.ThriveMatch.model.UserEntity;
-import com.thrivematch.ThriveMatch.model.UserType;
+import com.thrivematch.ThriveMatch.model.*;
 import com.thrivematch.ThriveMatch.repository.AdminRepo;
+import com.thrivematch.ThriveMatch.repository.TokenRepo;
 import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.security.CustomUserDetailsService;
 import com.thrivematch.ThriveMatch.security.JwtGenerator;
@@ -38,6 +37,8 @@ public class AdminService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtGenerator jwtGenerator;
+    @Autowired
+    private TokenRepo tokenRepo;
 
 
     public ResponseEntity<SuccessAndMessage> registerUser(UserRegister userRegisterDto) {

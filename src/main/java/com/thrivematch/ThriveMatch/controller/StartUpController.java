@@ -7,10 +7,7 @@ import com.thrivematch.ThriveMatch.service.FilePathService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,7 +30,7 @@ public class StartUpController {
             @RequestPart("address") String address,
             @RequestPart("poBox") String poBox,
             @RequestPart("year") String year,
-            @RequestPart("pictureFile" ) MultipartFile file){
+            @RequestPart("file" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
         SuccessAndMessage response = new SuccessAndMessage();
         try{
             String picturePath = filePathService.saveFile(file);

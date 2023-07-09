@@ -1,9 +1,8 @@
 package com.thrivematch.ThriveMatch.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class AdminEntity {
@@ -12,6 +11,9 @@ public class AdminEntity {
     private Integer id;
     private String username;
     private String password;
+
+    @OneToMany(mappedBy = "admin")
+    private List<TokenEntity> tokens;
 
     public Integer getId() {
         return id;

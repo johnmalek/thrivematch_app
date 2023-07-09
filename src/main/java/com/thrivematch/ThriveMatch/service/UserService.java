@@ -36,7 +36,6 @@ public class UserService {
     private UserRepo userRepo;
     @Autowired
     private TokenRepo tokenRepo;
-
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -77,6 +76,8 @@ public class UserService {
             responseDto.setMessage("login successful!");
             responseDto.setToken(token);
             responseDto.setAdmin(adminEntity.getUsername(), adminEntity.getId());
+            revokeAllAdminTokens(adminEntity);
+            saveAdminToken(adminEntity, token);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
         responseDto.setSuccess(false);
@@ -149,6 +150,8 @@ public class UserService {
         return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
     }
 
+
+    // User methods to save and revoke all tokens
     private void saveUserToken(UserEntity user, String jwtToken){
         var token = TokenEntity.builder()
                 .user(user)
@@ -169,5 +172,28 @@ public class UserService {
             t.setExpired(true);
         });
         tokenRepo.saveAll(validUserTokens);
+    }
+
+    // Admin methods to save and revoke all tokens
+    private void saveAdminToken(AdminEntity admin, String jwtToken){
+        var token = TokenEntity.builder()
+                .admin(admin)
+                .expired(false)
+                .revoked(false)
+                .tokenType(TokenType.BEARER)
+                .token(jwtToken)
+                .build();
+        tokenRepo.save(token);
+    }
+
+    private void revokeAllAdminTokens(AdminEntity admin){
+        var validAdminTokens = tokenRepo.findAllValidTokensByUser(admin.getId());
+        if (validAdminTokens.isEmpty())
+            return;
+        validAdminTokens.forEach(t -> {
+            t.setRevoked(true);
+            t.setExpired(true);
+        });
+        tokenRepo.saveAll(validAdminTokens);
     }
 }

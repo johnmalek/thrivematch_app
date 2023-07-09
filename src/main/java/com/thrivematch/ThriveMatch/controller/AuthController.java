@@ -8,7 +8,7 @@ import com.thrivematch.ThriveMatch.repository.AdminRepo;
 import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.security.CustomUserDetailsService;
 import com.thrivematch.ThriveMatch.security.JwtGenerator;
-import com.thrivematch.ThriveMatch.service.LogOutService;
+//import com.thrivematch.ThriveMatch.service.LogOutService;
 import com.thrivematch.ThriveMatch.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,8 +47,7 @@ public class AuthController {
     private JwtGenerator jwtGenerator;
     @Autowired
     private UserService userService;
-    @Autowired
-    private LogOutService logOutService;
+
 
     @PostMapping("api/v1/adminRegister")
     public ResponseEntity<String> adminRegister(@RequestBody AdminAuth adminAuthDto) {

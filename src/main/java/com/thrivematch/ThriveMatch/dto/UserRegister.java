@@ -1,13 +1,10 @@
 package com.thrivematch.ThriveMatch.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
 public class UserRegister {
     private String username;
     private String email;
     private String password;
+
     public String getUsername() {
         return username;
     }

@@ -30,7 +30,7 @@ public class InvestorController {
             @RequestPart("address") String address,
             @RequestPart("poBox") String poBox,
             @RequestPart("year") String year,
-            @RequestPart("pictureFile" ) MultipartFile file){
+            @RequestPart("file" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
         SuccessAndMessage response = new SuccessAndMessage();
         try{
             String picturePath = filePathService.saveFile(file);

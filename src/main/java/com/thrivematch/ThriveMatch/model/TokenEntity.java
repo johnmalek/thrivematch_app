@@ -27,4 +27,8 @@ public class TokenEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private AdminEntity admin;
+
 }
