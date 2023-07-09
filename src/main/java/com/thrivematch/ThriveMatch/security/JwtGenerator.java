@@ -14,7 +14,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtGenerator {
 
-    final long jwtExpiration = 86400000;
+    final long jwtExpiration = 21600000;
     final String jwtSecret = "e47e6e4f7513c6e34d6570d3a6f47c94087651b2f0e2953ae10de24ce5c43f87";
 
     public String generateToken(Authentication authentication, String userType) {
