@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,6 +22,8 @@ public class InvestorEntity {
         private LocalDate yearFounded;
         private String picturePath;
 
+        @OneToMany(mappedBy = "investor")
+        private List<LikesEntity> likes;
 
         @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
         @JoinTable(name = "investor_startups",
@@ -34,74 +37,90 @@ public class InvestorEntity {
         private Set<StartUpEntity> startups;
 
         public Integer getId() {
-            return id;
+                return id;
         }
 
         public void setId(Integer id) {
-            this.id = id;
+                this.id = id;
         }
 
         public String getName() {
-            return name;
+                return name;
         }
 
         public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getPicturePath() {
-            return picturePath;
-        }
-
-        public void setPicturePath(String picturePath) {
-            this.picturePath = picturePath;
+                this.name = name;
         }
 
         public String getDescription() {
-            return description;
+                return description;
         }
 
         public void setDescription(String description) {
-            this.description = description;
+                this.description = description;
         }
 
         public String getIndustry() {
-            return industry;
+                return industry;
         }
 
         public void setIndustry(String industry) {
-            this.industry = industry;
+                this.industry = industry;
         }
 
         public String getEmail() {
-            return email;
+                return email;
         }
 
         public void setEmail(String email) {
-            this.email = email;
+                this.email = email;
         }
 
         public String getAddress() {
-            return address;
+                return address;
         }
 
         public void setAddress(String address) {
-            this.address = address;
+                this.address = address;
         }
 
         public String getPoBox() {
-            return poBox;
+                return poBox;
         }
 
         public void setPoBox(String poBox) {
-            this.poBox = poBox;
+                this.poBox = poBox;
         }
 
         public LocalDate getYearFounded() {
-            return yearFounded;
+                return yearFounded;
         }
 
         public void setYearFounded(LocalDate yearFounded) {
-            this.yearFounded = yearFounded;
+                this.yearFounded = yearFounded;
+        }
+
+        public String getPicturePath() {
+                return picturePath;
+        }
+
+        public void setPicturePath(String picturePath) {
+                this.picturePath = picturePath;
+        }
+
+        public List<LikesEntity> getLikes() {
+                return likes;
+        }
+
+        public void setLikes(List<LikesEntity> likes) {
+                this.likes = likes;
+        }
+
+        public Set<StartUpEntity> getStartups() {
+                return startups;
+        }
+
+        public void setStartups(Set<StartUpEntity> startups) {
+                this.startups = startups;
         }
 }

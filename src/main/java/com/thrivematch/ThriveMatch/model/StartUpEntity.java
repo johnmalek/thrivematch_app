@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,6 +21,9 @@ public class StartUpEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate yearFounded;
     private String picturePath;
+
+    @OneToMany(mappedBy = "startUp")
+    private List<LikesEntity> likes;
 
     @ManyToMany(mappedBy = "startups", fetch = FetchType.LAZY)
     private Set<InvestorEntity> investors;
