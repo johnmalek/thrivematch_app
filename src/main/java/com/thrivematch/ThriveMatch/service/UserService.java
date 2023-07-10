@@ -97,7 +97,6 @@ public class UserService {
         userEntity.setUsername(userRegisterDto.getUsername());
         userEntity.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         userEntity.setEmail(userRegisterDto.getEmail());
-        userEntity.setStatus(true);
         userRepo.save(userEntity);
         response.setMessage("User Created Successfully !!");
         response.setSuccess(true);
@@ -143,7 +142,6 @@ public class UserService {
         userEntity.setUsername(userUpdateDto.getUsername());
         userEntity.setEmail(userUpdateDto.getEmail());
         userEntity.setPassword(passwordEncoder.encode(userUpdateDto.getPassword()));
-        userEntity.setStatus(true);
         userRepo.save(userEntity);
         response.setMessage("User updated successfully");
         response.setSuccess(true);

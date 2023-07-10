@@ -18,7 +18,6 @@ public class UserEntity {
     private String username;
     @Email(message = "invalid email address")
     private String email;
-    private boolean status;
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\W)(?=\\\\S+$).{8,35}$",
             message = "password must have one uppercase character, one lowercase character, one special character and must be " +
                     "8-35 characters long")
