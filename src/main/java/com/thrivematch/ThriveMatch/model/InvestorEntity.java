@@ -22,8 +22,8 @@ public class InvestorEntity {
         private LocalDate yearFounded;
         private String picturePath;
 
-        @OneToMany(mappedBy = "investor")
-        private List<LikesEntity> likes;
+//        @OneToMany(mappedBy = "investor")
+//        private List<LikesEntity> likes;
 
         @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
         @JoinTable(name = "investor_startups",
@@ -108,13 +108,13 @@ public class InvestorEntity {
                 this.picturePath = picturePath;
         }
 
-        public List<LikesEntity> getLikes() {
-                return likes;
-        }
-
-        public void setLikes(List<LikesEntity> likes) {
-                this.likes = likes;
-        }
+//        public List<LikesEntity> getLikes() {
+//                return likes;
+//        }
+//
+//        public void setLikes(List<LikesEntity> likes) {
+//                this.likes = likes;
+//        }
 
         public Set<StartUpEntity> getStartups() {
                 return startups;

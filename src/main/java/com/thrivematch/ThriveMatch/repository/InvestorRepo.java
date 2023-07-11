@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface InvestorRepo extends JpaRepository<InvestorEntity, Integer> {
-
+    boolean existsByName(String name);
 }

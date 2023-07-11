@@ -1,11 +1,14 @@
 package com.thrivematch.ThriveMatch.controller;
 
+import com.thrivematch.ThriveMatch.dto.InvestorInfoResponse;
 import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
 import com.thrivematch.ThriveMatch.model.InvestorEntity;
 import com.thrivematch.ThriveMatch.repository.InvestorRepo;
-import com.thrivematch.ThriveMatch.service.FilePathService;
+import com.thrivematch.ThriveMatch.service.FileService;
+import com.thrivematch.ThriveMatch.service.InvestorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +20,11 @@ import java.time.LocalDate;
 @RequestMapping("/api/v1")
 public class InvestorController {
     @Autowired
-    private FilePathService filePathService;
+    private FileService fileService;
     @Autowired
     private InvestorRepo investorRepo;
+    @Autowired
+    private InvestorService investorService;
 
     @PostMapping("/investors")
     public ResponseEntity<SuccessAndMessage> createProfile(
@@ -32,8 +37,13 @@ public class InvestorController {
             @RequestPart("year") String year,
             @RequestPart("file" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
         SuccessAndMessage response = new SuccessAndMessage();
+        if(investorRepo.existsByName(name)){
+            response.setSuccess(false);
+            response.setMessage("Investor with name "+ name + " already exists");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         try{
-            String picturePath = filePathService.saveFile(file);
+            String picturePath = fileService.saveFile(file);
             InvestorEntity profile = new InvestorEntity();
             profile.setName(name);
             profile.setEmail(email);
@@ -52,5 +62,18 @@ public class InvestorController {
             response.setMessage("Internal Server Error");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("all_investors")
+    public ResponseEntity<InvestorInfoResponse> getAllInvestors(){
+        return investorService.getAllInvestors();
+    }
+
+    @GetMapping("/investor/{investorId}/image")
+    public ResponseEntity<?> retrieveInvestorImage(@PathVariable Integer investorId) throws IOException{
+        byte[] imageData = fileService.retrieveInvestorImage(investorId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
     }
 }

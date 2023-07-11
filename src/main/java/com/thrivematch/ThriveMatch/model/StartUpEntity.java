@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,11 +23,24 @@ public class StartUpEntity {
     private LocalDate yearFounded;
     private String picturePath;
 
-    @OneToMany(mappedBy = "startUp")
-    private List<LikesEntity> likes;
+//    @OneToMany(mappedBy = "startUp")
+//    private List<LikesEntity> likes;
+
+    @OneToMany(mappedBy = "startup", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DocumentsEntity> documents = new ArrayList<>();
 
     @ManyToMany(mappedBy = "startups", fetch = FetchType.LAZY)
     private Set<InvestorEntity> investors;
+
+
+
+    public List<DocumentsEntity> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<DocumentsEntity> documents) {
+        this.documents = documents;
+    }
 
     public Integer getId() {
         return id;

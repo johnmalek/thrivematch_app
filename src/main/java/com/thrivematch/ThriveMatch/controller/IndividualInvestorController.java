@@ -2,23 +2,22 @@ package com.thrivematch.ThriveMatch.controller;
 
 import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
 import com.thrivematch.ThriveMatch.model.IndividualInvestorEntity;
-import com.thrivematch.ThriveMatch.model.StartUpEntity;
 import com.thrivematch.ThriveMatch.repository.IndividualInvestorRepo;
-import com.thrivematch.ThriveMatch.service.FilePathService;
+import com.thrivematch.ThriveMatch.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1")
 public class IndividualInvestorController {
     @Autowired
-    private FilePathService filePathService;
+    private FileService fileService;
     @Autowired
     private IndividualInvestorRepo individualInvestorRepo;
 
@@ -31,7 +30,7 @@ public class IndividualInvestorController {
             @RequestPart("file" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
         SuccessAndMessage response = new SuccessAndMessage();
         try{
-            String picturePath = filePathService.saveFile(file);
+            String picturePath = fileService.saveFile(file);
             IndividualInvestorEntity profile = new IndividualInvestorEntity();
             profile.setName(name);
             profile.setEmail(email);
@@ -47,5 +46,13 @@ public class IndividualInvestorController {
             response.setMessage("Internal Server Error");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/individual_investor/{individualinvestorId}/image")
+    public ResponseEntity<?> retrieveIndividualInvestorImage(@PathVariable Integer individualinvestorId) throws IOException{
+        byte[] imageData = fileService.retrieveInvestorImage(individualinvestorId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
     }
 }
