@@ -18,10 +18,6 @@ import java.util.Optional;
 @Service
 public class DocumentService {
     @Autowired
-    private StartUpEntity startUpEntity;
-    @Autowired
-    private DocumentsEntity documentsEntity;
-    @Autowired
     private DocumentsRepo documentsRepo;
 
     public String saveFile(MultipartFile file) throws IOException {
@@ -33,27 +29,9 @@ public class DocumentService {
         return filePath;
     }
 
-    public ResponseEntity<SuccessAndMessage> uploadFile(MultipartFile file) throws IOException {
-        SuccessAndMessage response = new SuccessAndMessage();
-        if(documentsRepo.existsByName(file)){
-            response.setSuccess(false);
-            response.setMessage("File already exists");
-        }
-        String filePath = saveFile(file);
-        DocumentsEntity docs = new DocumentsEntity();
-        docs.setFilePath(filePath);
-        documentsRepo.save(docs);
-        response.setSuccess(true);
-        response.setMessage("File Uploaded Successfully");
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
     public byte[] downloadFile(Integer id) throws IOException {
         Optional<DocumentsEntity> file = documentsRepo.findById(id);
-        if(file.isEmpty()){
-            String filePath = file.get().getFilePath();
-            return Files.readAllBytes(new File(filePath).toPath());
-        }
-        return "File not found".getBytes();
+        String filePath = file.get().getFilePath();
+        return Files.readAllBytes(new File(filePath).toPath());
     }
 }

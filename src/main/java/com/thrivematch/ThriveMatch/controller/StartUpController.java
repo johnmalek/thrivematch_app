@@ -88,26 +88,72 @@ public class StartUpController {
     }
 
     @PostMapping("/startup/{startupId}/uploadDoc")
-    public ResponseEntity<SuccessAndMessage> uploadDocs(@PathVariable Integer startupId, MultipartFile file) throws IOException {
+    public ResponseEntity<SuccessAndMessage> uploadDocs(@PathVariable Integer startupId, @RequestPart("file") MultipartFile file) throws IOException {
         SuccessAndMessage response = new SuccessAndMessage();
-        if(documentsRepo.existsByName(file)){
-            response.setSuccess(false);
-            response.setMessage("File exists");
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-        try{
-            String filePath = fileService.saveFile(file);
+        try {
+            if (documentsRepo.existsByFilePath(file.getOriginalFilename())) {
+                response.setSuccess(false);
+                response.setMessage("File exists");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+            StartUpEntity startup = startUpRepo.findById(startupId).orElseThrow();
+            String filePath = documentService.saveFile(file);
             DocumentsEntity documentsEntity = new DocumentsEntity();
             documentsEntity.setFilePath(filePath);
-            StartUpEntity startup = startUpRepo.findById(startupId).orElseThrow();
-            List docs = new ArrayList();
-            docs.add(filePath);
-            startup.setDocuments(docs);
-        } catch (IOException e){
+            documentsEntity.setStartup(startup);
+
+            documentsRepo.save(documentsEntity);
+            response.setSuccess(true);
+            response.setMessage("File uploaded successfully");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IOException e) {
             response.setSuccess(false);
             response.setMessage("Internal Server Error");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return null;
+    }
+
+    //Download a file belonging to a specific startup
+    @GetMapping("/startup/{startupId}/docs/{fileId}")
+    public ResponseEntity<?> downloadFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
+        StartUpEntity startup = startUpRepo.findById(startupId).orElse(null);
+        if (startup == null) {
+            // Handle startup not found error
+            return ResponseEntity.notFound().build();
+        }
+
+        // Check if the startup has any documents
+        List<DocumentsEntity> documents = startup.getDocuments();
+        if (documents == null || documents.isEmpty()) {
+            // Handle no documents found error
+            return ResponseEntity.notFound().build();
+        }
+
+        DocumentsEntity document = documentsRepo.findById(fileId).orElseThrow();
+        if (document == null || !documents.contains(document)) {
+            // Handle document not found or not associated with the startup error
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] fileData = documentService.downloadFile(fileId);
+
+        // Determine the content type based on the file extension
+        String contentType;
+        String filename = document.getFilePath();
+        if (filename.endsWith(".png")) {
+            contentType = "image/png";
+        } else if (filename.endsWith(".jpg") || filename.endsWith(".jpeg")) {
+            contentType = "image/jpeg";
+        } else if (filename.endsWith(".pdf")) {
+            contentType = "application/pdf";
+        } else if (filename.endsWith(".docx")) {
+            contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+        } else {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .body(fileData);
     }
 }
