@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -158,11 +159,11 @@ public class StartUpController {
 
     @GetMapping("/startup/{startupId}/allFiles")
     public ResponseEntity<?> allFiles(@PathVariable Integer startupId){
-        StartUpEntity startUp = startUpRepo.findById(startupId).orElseThrow(null);
-        if (startUp == null){
+        Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
+        if (startUp.isEmpty()){
             return ResponseEntity.notFound().build();
         }
-        List<DocumentsEntity> files = startUp.getDocuments();
+        List<DocumentsEntity> files = startUp.get().getDocuments();
         return ResponseEntity.ok().body(files);
     }
 

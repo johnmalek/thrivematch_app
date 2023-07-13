@@ -23,8 +23,8 @@ public class StartUpEntity {
     private LocalDate yearFounded;
     private String picturePath;
 
-//    @OneToMany(mappedBy = "startUp")
-//    private List<LikesEntity> likes;
+    @OneToMany(mappedBy = "startup")
+    private List<LikesEntity> likes;
 
     @OneToMany(mappedBy = "startup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DocumentsEntity> documents = new ArrayList<>();
