@@ -38,8 +38,8 @@ class userDetails{
 
 public class UserLoginResponse {
     private boolean success;
-    private String token;
     private String message;
+    private String token;
     private userDetails user;
 
     public boolean isSuccess() {

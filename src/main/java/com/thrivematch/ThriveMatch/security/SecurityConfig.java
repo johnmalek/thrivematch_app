@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .httpBasic();
                 http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
                 http.logout()
-                        .logoutUrl("/api/v1/logout")
+                        .logoutUrl("/logout")
                         .addLogoutHandler(logOutService)
                         .logoutSuccessHandler(
                                 (request, response, authentication) ->

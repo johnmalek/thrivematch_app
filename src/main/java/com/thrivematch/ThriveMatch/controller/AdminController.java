@@ -7,6 +7,8 @@ import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.security.CustomUserDetailsService;
 import com.thrivematch.ThriveMatch.security.JwtGenerator;
 import com.thrivematch.ThriveMatch.service.AdminService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,5 +70,4 @@ public class AdminController {
         System.out.println("allUsers");
         return adminService.allUsers();
     }
-
 }
