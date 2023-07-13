@@ -18,9 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -87,6 +85,7 @@ public class StartUpController {
                 .body(imageData);
     }
 
+    //Have a specific startup upload a file
     @PostMapping("/startup/{startupId}/uploadDoc")
     public ResponseEntity<SuccessAndMessage> uploadDocs(@PathVariable Integer startupId, @RequestPart("file") MultipartFile file) throws IOException {
         SuccessAndMessage response = new SuccessAndMessage();
@@ -155,5 +154,66 @@ public class StartUpController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(fileData);
+    }
+
+    @GetMapping("/startup/{startupId}/allFiles")
+    public ResponseEntity<?> allFiles(@PathVariable Integer startupId){
+        StartUpEntity startUp = startUpRepo.findById(startupId).orElseThrow(null);
+        if (startUp == null){
+            return ResponseEntity.notFound().build();
+        }
+        List<DocumentsEntity> files = startUp.getDocuments();
+        return ResponseEntity.ok().body(files);
+    }
+
+    @DeleteMapping("/startup/{startupId}/deleteOneFile/{fileId}")
+    public ResponseEntity<SuccessAndMessage> deleteOneFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
+        StartUpEntity startup = startUpRepo.findById(startupId).orElse(null);
+        SuccessAndMessage response = new SuccessAndMessage();
+        // Handle startup not found error
+        if (startup == null) {
+            response.setSuccess(false);
+            response.setMessage("Startup with ID "+ startupId + " not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        DocumentsEntity document = documentsRepo.findById(fileId).orElseThrow();
+        // Handle a case where the file does not exist for the startup
+        if (document == null){
+            response.setSuccess(false);
+            response.setMessage("File not found");
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        }else{
+            documentsRepo.delete(document);
+            response.setSuccess(true);
+            response.setMessage("File deleted");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
+
+    @DeleteMapping("/startup/{startupId}/deleteAllFiles")
+    public ResponseEntity<SuccessAndMessage> deleteAllFiles(@PathVariable Integer startupId) throws IOException{
+        SuccessAndMessage response = new SuccessAndMessage();
+        StartUpEntity startup = startUpRepo.findById(startupId).orElse(null);
+        // Handle startup not found error
+        if (startup == null) {
+            response.setSuccess(false);
+            response.setMessage("StartUp with ID "+ startupId + " not found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        List<DocumentsEntity> docsToDelete = startup.getDocuments();
+        // Handle a case where there are no files for the startup
+        if(docsToDelete == null || docsToDelete.isEmpty()){
+            response.setSuccess(false);
+            response.setMessage("No files found for the startup");
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        }
+        for (DocumentsEntity doc : docsToDelete) {
+            doc.setStartup(null); // Remove the association with the startup
+        }
+        startup.getDocuments().clear();
+        documentsRepo.deleteAll(docsToDelete);
+        response.setSuccess(true);
+        response.setMessage("Files deleted successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

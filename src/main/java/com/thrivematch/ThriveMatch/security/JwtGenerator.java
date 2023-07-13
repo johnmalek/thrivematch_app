@@ -54,7 +54,7 @@ public class JwtGenerator {
             return true;
         }
         catch (Exception ex) {
-            throw new AuthenticationCredentialsNotFoundException("JWT token is not valid " + token);
+            throw new AuthenticationCredentialsNotFoundException("JWT token "+ token + " is not valid " );
         }
     }
 }
