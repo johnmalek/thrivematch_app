@@ -3,6 +3,8 @@ package com.thrivematch.ThriveMatch.controller;
 import com.thrivematch.ThriveMatch.dto.StartUpInfoResponse;
 import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
 import com.thrivematch.ThriveMatch.model.DocumentsEntity;
+import com.thrivematch.ThriveMatch.model.InvestorEntity;
+import com.thrivematch.ThriveMatch.model.LikesEntity;
 import com.thrivematch.ThriveMatch.model.StartUpEntity;
 import com.thrivematch.ThriveMatch.repository.DocumentsRepo;
 import com.thrivematch.ThriveMatch.repository.StartUpRepo;
@@ -35,6 +37,7 @@ public class StartUpController {
     @Autowired
     private DocumentsRepo documentsRepo;
 
+    //Upload startup information
     @PostMapping("/startups")
     public ResponseEntity<SuccessAndMessage> createProfile(
             @RequestPart("name") String name,
@@ -73,11 +76,13 @@ public class StartUpController {
         }
     }
 
+    // Return a list of all startups
     @GetMapping("/all_startups")
     public ResponseEntity<StartUpInfoResponse> getAllStartUps(@RequestHeader(name = "Authorization") String token){
         return startUpService.getAllStartups();
     }
 
+    // Return the image belonging to a specific startup
     @GetMapping("/startup/{startupId}/image")
     public ResponseEntity<?> retrieveStartUpImage(@PathVariable Integer startupId) throws IOException{
         byte[] imageData = fileService.retrieveStartUpImage(startupId);
@@ -157,6 +162,7 @@ public class StartUpController {
                 .body(fileData);
     }
 
+    //Return a list of files belonging to a specific startup
     @GetMapping("/startup/{startupId}/allFiles")
     public ResponseEntity<?> allFiles(@PathVariable Integer startupId){
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
@@ -167,6 +173,7 @@ public class StartUpController {
         return ResponseEntity.ok().body(files);
     }
 
+    // Startup delete one file
     @DeleteMapping("/startup/{startupId}/deleteOneFile/{fileId}")
     public ResponseEntity<SuccessAndMessage> deleteOneFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
         StartUpEntity startup = startUpRepo.findById(startupId).orElse(null);
@@ -191,6 +198,8 @@ public class StartUpController {
         }
     }
 
+
+    // Startup delete all files
     @DeleteMapping("/startup/{startupId}/deleteAllFiles")
     public ResponseEntity<SuccessAndMessage> deleteAllFiles(@PathVariable Integer startupId) throws IOException{
         SuccessAndMessage response = new SuccessAndMessage();
@@ -216,5 +225,17 @@ public class StartUpController {
         response.setSuccess(true);
         response.setMessage("Files deleted successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+     //Return a list of investors that have liked the startup
+    @GetMapping("/startups/{startupId}/likes")
+    public ResponseEntity<?> likes(@PathVariable Integer startupId){
+        Optional<StartUpEntity> startup = startUpRepo.findById(startupId);
+
+        if(startup.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        List<LikesEntity> likedInvestors = startup.get().getLikes();
+        return ResponseEntity.ok(likedInvestors);
     }
 }

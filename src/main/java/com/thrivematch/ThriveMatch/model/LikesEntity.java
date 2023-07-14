@@ -1,5 +1,6 @@
 package com.thrivematch.ThriveMatch.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Optional;

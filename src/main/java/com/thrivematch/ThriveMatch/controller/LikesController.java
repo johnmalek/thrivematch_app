@@ -59,7 +59,7 @@ public class LikesController {
 
         if(investor.isEmpty() || startUp.isEmpty()){
             response.setSuccess(false);
-            response.setMessage("Investor or startup does noT exist");
+            response.setMessage("Investor or startup does not exist");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         likeService.deleteLikes(investor.get(), startUp.get());
@@ -69,7 +69,7 @@ public class LikesController {
     }
 
     // Startup like an investor
-    @PostMapping("/startups/{startupId}/investor/{investorId}/like")
+    @PostMapping("/startups/{startupId}/investors/{investorId}/like")
     public ResponseEntity<SuccessAndMessage> likeInvestor(@PathVariable Integer investorId, @PathVariable Integer startupId){
         Optional<InvestorEntity> investor = investorRepo.findById(investorId);
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
@@ -92,7 +92,7 @@ public class LikesController {
     }
 
     // Startup unlike an investor
-    @DeleteMapping("/startups/{startupId}/investor/{investorId}/unlike")
+    @DeleteMapping("/startups/{startupId}/investors/{investorId}/unlike")
     public ResponseEntity<SuccessAndMessage> unLikeInvestor(@PathVariable Integer investorId, @PathVariable Integer startupId){
         Optional<InvestorEntity> investor = investorRepo.findById(investorId);
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
@@ -100,7 +100,7 @@ public class LikesController {
 
         if(investor.isEmpty() || startUp.isEmpty()){
             response.setSuccess(false);
-            response.setMessage("Investor or startup does noT exist");
+            response.setMessage("Investor or startup does not exist");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         likeService.deleteLikes(investor.get(), startUp.get());

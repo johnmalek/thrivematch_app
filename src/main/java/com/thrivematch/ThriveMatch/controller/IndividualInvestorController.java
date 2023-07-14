@@ -21,6 +21,8 @@ public class IndividualInvestorController {
     @Autowired
     private IndividualInvestorRepo individualInvestorRepo;
 
+
+    // Upload investor information
     @PostMapping("/individual_investor")
     public ResponseEntity<SuccessAndMessage> createProfile(
             @RequestPart("name") String name,
@@ -48,6 +50,7 @@ public class IndividualInvestorController {
         }
     }
 
+    // Return the image belonging to a specific individual investor
     @GetMapping("/individual_investor/{individualinvestorId}/image")
     public ResponseEntity<?> retrieveIndividualInvestorImage(@PathVariable Integer individualinvestorId) throws IOException{
         byte[] imageData = fileService.retrieveInvestorImage(individualinvestorId);

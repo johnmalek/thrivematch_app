@@ -26,6 +26,8 @@ public class InvestorController {
     @Autowired
     private InvestorService investorService;
 
+
+    // Upload investor Information
     @PostMapping("/investors")
     public ResponseEntity<SuccessAndMessage> createProfile(
             @RequestPart("name") String name,
@@ -64,11 +66,13 @@ public class InvestorController {
         }
     }
 
+    // Return a list of all investors
     @GetMapping("all_investors")
     public ResponseEntity<InvestorInfoResponse> getAllInvestors(){
         return investorService.getAllInvestors();
     }
 
+    // Return the image belonging to a specific investor
     @GetMapping("/investor/{investorId}/image")
     public ResponseEntity<?> retrieveInvestorImage(@PathVariable Integer investorId) throws IOException{
         byte[] imageData = fileService.retrieveInvestorImage(investorId);

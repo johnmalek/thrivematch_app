@@ -23,6 +23,10 @@ public class LikeService {
         LikesEntity like = likesRepo.findByInvestorAndStartup(investor, startUp);
 
         if(like != null){
+            like.setInvestor(null);
+            like.setStartUp(null);
+            likesRepo.save(like);
+
             likesRepo.delete(like);
         }
     }

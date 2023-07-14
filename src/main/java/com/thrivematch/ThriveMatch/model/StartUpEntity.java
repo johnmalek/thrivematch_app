@@ -1,6 +1,7 @@
 package com.thrivematch.ThriveMatch.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -32,7 +33,13 @@ public class StartUpEntity {
     @ManyToMany(mappedBy = "startups", fetch = FetchType.LAZY)
     private Set<InvestorEntity> investors;
 
+    public List<LikesEntity> getLikes() {
+        return likes;
+    }
 
+    public void setLikes(List<LikesEntity> likes) {
+        this.likes = likes;
+    }
 
     public List<DocumentsEntity> getDocuments() {
         return documents;
