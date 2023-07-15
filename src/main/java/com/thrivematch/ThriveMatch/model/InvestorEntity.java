@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "investors")
 public class InvestorEntity {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)

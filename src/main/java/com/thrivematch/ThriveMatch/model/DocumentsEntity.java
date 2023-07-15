@@ -3,6 +3,7 @@ package com.thrivematch.ThriveMatch.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "documents")
 public class DocumentsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

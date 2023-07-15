@@ -1,14 +1,12 @@
 package com.thrivematch.ThriveMatch.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "individual_investor")
 public class IndividualInvestorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

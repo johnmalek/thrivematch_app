@@ -9,6 +9,7 @@ import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 @Data
 public class UserEntity {
     @Id

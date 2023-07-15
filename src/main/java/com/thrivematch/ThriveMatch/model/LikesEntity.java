@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.util.Optional;
 
 @Entity
+@Table(name = "likes")
 public class LikesEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
