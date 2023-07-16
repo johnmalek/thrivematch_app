@@ -23,7 +23,13 @@ public class StartUpEntity {
     private String poBox;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate yearFounded;
-    private String picturePath;
+    @Lob
+    @Column(name = "image", length = 10000)
+    private byte[] image;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     @OneToMany(mappedBy = "startup")
     private List<LikesEntity> likes;
@@ -46,6 +52,14 @@ public class StartUpEntity {
         return documents;
     }
 
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
     public void setDocuments(List<DocumentsEntity> documents) {
         this.documents = documents;
     }
@@ -66,12 +80,20 @@ public class StartUpEntity {
         this.name = name;
     }
 
-    public String getPicturePath() {
-        return picturePath;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setPicturePath(String picturePath) {
-        this.picturePath = picturePath;
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public Set<InvestorEntity> getInvestors() {
+        return investors;
+    }
+
+    public void setInvestors(Set<InvestorEntity> investors) {
+        this.investors = investors;
     }
 
     public String getDescription() {

@@ -22,10 +22,16 @@ public class InvestorEntity {
         private String poBox;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         private LocalDate yearFounded;
-        private String picturePath;
+        @Lob
+        @Column(name = "image")
+        private byte[] image;
 
         @OneToMany(mappedBy = "investor")
         private List<LikesEntity> likes;
+
+        @ManyToOne
+        @JoinColumn(name = "user_id")
+        private UserEntity user;
 
         @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
         @JoinTable(name = "investor_startups",
@@ -102,12 +108,20 @@ public class InvestorEntity {
                 this.yearFounded = yearFounded;
         }
 
-        public String getPicturePath() {
-                return picturePath;
+        public byte[] getImage() {
+                return image;
         }
 
-        public void setPicturePath(String picturePath) {
-                this.picturePath = picturePath;
+        public UserEntity getUser() {
+                return user;
+        }
+
+        public void setUser(UserEntity user) {
+                this.user = user;
+        }
+
+        public void setImage(byte[] image) {
+                this.image = image;
         }
 
         public List<LikesEntity> getLikes() {

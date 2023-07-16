@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class AllUserResponse {
     private boolean success;
     private String message;
-    private ArrayList<UserDetails> users;
+    private ArrayList<UserDetailsDTO> users;
 
     public boolean isSuccess() {
         return success;
@@ -15,12 +15,12 @@ public class AllUserResponse {
         this.success = success;
     }
 
-    public ArrayList<UserDetails> getUsers() {
+    public ArrayList<UserDetailsDTO> getUsers() {
         return users;
     }
 
-    public void setUsers(ArrayList<UserDetails> userDetails) {
-        this.users = userDetails;
+    public void setUsers(ArrayList<UserDetailsDTO> userDetailDTOS) {
+        this.users = userDetailDTOS;
     }
 
     public String getMessage() {

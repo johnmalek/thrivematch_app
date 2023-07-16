@@ -3,8 +3,10 @@ package com.thrivematch.ThriveMatch.controller;
 import com.thrivematch.ThriveMatch.dto.InvestorInfoResponse;
 import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
 import com.thrivematch.ThriveMatch.model.InvestorEntity;
+import com.thrivematch.ThriveMatch.model.LikesEntity;
+import com.thrivematch.ThriveMatch.model.StartUpEntity;
 import com.thrivematch.ThriveMatch.repository.InvestorRepo;
-import com.thrivematch.ThriveMatch.service.FileService;
+import com.thrivematch.ThriveMatch.service.ImageService;
 import com.thrivematch.ThriveMatch.service.InvestorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,12 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
 public class InvestorController {
     @Autowired
-    private FileService fileService;
+    private ImageService imageService;
     @Autowired
     private InvestorRepo investorRepo;
     @Autowired
@@ -29,7 +33,7 @@ public class InvestorController {
 
     // Upload investor Information
     @PostMapping("/investors")
-    public ResponseEntity<SuccessAndMessage> createProfile(
+    public ResponseEntity<SuccessAndMessage> createInvestor(
             @RequestPart("name") String name,
             @RequestPart("email") String email,
             @RequestPart("desc") String description,
@@ -37,33 +41,8 @@ public class InvestorController {
             @RequestPart("address") String address,
             @RequestPart("poBox") String poBox,
             @RequestPart("year") String year,
-            @RequestPart("file" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
-        SuccessAndMessage response = new SuccessAndMessage();
-        if(investorRepo.existsByName(name)){
-            response.setSuccess(false);
-            response.setMessage("Investor with name "+ name + " already exists");
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-        try{
-            String picturePath = fileService.saveFile(file);
-            InvestorEntity profile = new InvestorEntity();
-            profile.setName(name);
-            profile.setEmail(email);
-            profile.setDescription(description);
-            profile.setIndustry(industry);
-            profile.setPoBox(poBox);
-            profile.setAddress(address);
-            profile.setYearFounded(LocalDate.parse(year));
-            profile.setPicturePath(picturePath);
-            InvestorEntity savedProfile = investorRepo.save(profile);
-            response.setSuccess(true);
-            response.setMessage("Profile created successfully");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IOException e){
-            response.setSuccess(false);
-            response.setMessage("Internal Server Error");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            @RequestPart("image" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
+        return investorService.createInvestor(name, email, description, industry, address, poBox, year, file);
     }
 
     // Return a list of all investors
@@ -74,10 +53,16 @@ public class InvestorController {
 
     // Return the image belonging to a specific investor
     @GetMapping("/investor/{investorId}/image")
-    public ResponseEntity<?> retrieveInvestorImage(@PathVariable Integer investorId) throws IOException{
-        byte[] imageData = fileService.retrieveInvestorImage(investorId);
+    public ResponseEntity<?> downloadInvestorImage(@PathVariable Integer investorId) throws IOException{
+        byte[] imageData = imageService.downloadInvestorImage(investorId);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);
+    }
+
+    //Return a list of investors that have liked the startup
+    @GetMapping("/investors/{investorId}/likes")
+    public ResponseEntity<?> likes(@PathVariable Integer investorId){
+        return investorService.likes(investorId);
     }
 }

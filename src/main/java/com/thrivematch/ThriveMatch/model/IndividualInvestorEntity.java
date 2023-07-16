@@ -15,7 +15,9 @@ public class IndividualInvestorEntity {
     private String description;
     private String industry;
     private String email;
-    private String picturePath;
+    @Lob
+    @Column(name = "image")
+    private byte[] image;
 
     public Integer getId() {
         return id;
@@ -33,12 +35,12 @@ public class IndividualInvestorEntity {
         this.name = name;
     }
 
-    public String getPicturePath() {
-        return picturePath;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setPicturePath(String picturePath) {
-        this.picturePath = picturePath;
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public String getDescription() {

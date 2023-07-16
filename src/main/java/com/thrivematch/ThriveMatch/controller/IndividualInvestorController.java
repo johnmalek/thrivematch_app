@@ -3,7 +3,7 @@ package com.thrivematch.ThriveMatch.controller;
 import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
 import com.thrivematch.ThriveMatch.model.IndividualInvestorEntity;
 import com.thrivematch.ThriveMatch.repository.IndividualInvestorRepo;
-import com.thrivematch.ThriveMatch.service.FileService;
+import com.thrivematch.ThriveMatch.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +17,7 @@ import java.io.IOException;
 @RequestMapping("/api/v1")
 public class IndividualInvestorController {
     @Autowired
-    private FileService fileService;
+    private ImageService imageService;
     @Autowired
     private IndividualInvestorRepo individualInvestorRepo;
 
@@ -29,16 +29,16 @@ public class IndividualInvestorController {
             @RequestPart("email") String email,
             @RequestPart("desc") String description,
             @RequestPart("industry") String industry,
-            @RequestPart("file" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
+            @RequestPart("image" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
         SuccessAndMessage response = new SuccessAndMessage();
         try{
-            String picturePath = fileService.saveFile(file);
+            byte[] image = imageService.uploadIndividualInvestorImage(file).getImage();
             IndividualInvestorEntity profile = new IndividualInvestorEntity();
             profile.setName(name);
             profile.setEmail(email);
             profile.setDescription(description);
             profile.setIndustry(industry);
-            profile.setPicturePath(picturePath);
+            profile.setImage(image);
             IndividualInvestorEntity savedProfile = individualInvestorRepo.save(profile);
             response.setSuccess(true);
             response.setMessage("Profile created successfully");
@@ -53,7 +53,7 @@ public class IndividualInvestorController {
     // Return the image belonging to a specific individual investor
     @GetMapping("/individual_investor/{individualinvestorId}/image")
     public ResponseEntity<?> retrieveIndividualInvestorImage(@PathVariable Integer individualinvestorId) throws IOException{
-        byte[] imageData = fileService.retrieveInvestorImage(individualinvestorId);
+        byte[] imageData = imageService.downloadIndividualInvestorImage(individualinvestorId);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);

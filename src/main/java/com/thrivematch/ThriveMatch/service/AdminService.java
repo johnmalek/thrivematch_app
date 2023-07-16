@@ -11,14 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -102,19 +96,19 @@ public class AdminService {
     public ResponseEntity<AllUserResponse> allUsers(){
         ArrayList<UserEntity> users = new ArrayList<>(userRepo.findAll());
         AllUserResponse allUsersResponse = new AllUserResponse();
-        ArrayList<UserDetails> userDetails = new ArrayList<>();
+        ArrayList<UserDetailsDTO> userDetailDTOS = new ArrayList<>();
         if(users.size()>0){
             allUsersResponse.setMessage("all users found");
             allUsersResponse.setSuccess(true);
-            UserDetails userDetail;
+            UserDetailsDTO userDetail;
             for(UserEntity user: users){
-                userDetail = new UserDetails();
+                userDetail = new UserDetailsDTO();
                 userDetail.setId(user.getId());
                 userDetail.setEmail(user.getEmail());
                 userDetail.setUsername(user.getUsername());
-                userDetails.add(userDetail);
+                userDetailDTOS.add(userDetail);
             }
-            allUsersResponse.setUsers(userDetails);
+            allUsersResponse.setUsers(userDetailDTOS);
             return ResponseEntity.ok().body(allUsersResponse);
         }
         allUsersResponse.setSuccess(false);

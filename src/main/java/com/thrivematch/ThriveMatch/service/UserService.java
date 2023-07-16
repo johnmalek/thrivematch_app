@@ -14,17 +14,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
-import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -127,6 +119,8 @@ public class UserService {
         responseDto.setSuccess(false);
         responseDto.setMessage("incorrect username or password");
         return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.UNAUTHORIZED);
+
+
     }
 
     public ResponseEntity<SuccessAndMessage> updateUser(Integer id, UserUpdate userUpdateDto) {

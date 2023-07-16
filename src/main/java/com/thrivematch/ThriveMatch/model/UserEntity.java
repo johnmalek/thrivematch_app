@@ -27,4 +27,10 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<TokenEntity> tokens;
 
+    @OneToMany(mappedBy = "user")
+    private List<StartUpEntity> startups;
+
+    @OneToMany(mappedBy = "user")
+    private List<InvestorEntity> investors;
+
 }

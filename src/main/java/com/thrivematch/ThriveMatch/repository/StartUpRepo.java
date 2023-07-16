@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface StartUpRepo extends JpaRepository<StartUpEntity, Integer> {
     boolean existsByName(String name);
+
+    boolean existsByEmail(String email);
 }

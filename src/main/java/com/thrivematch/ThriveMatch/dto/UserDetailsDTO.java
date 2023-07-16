@@ -1,8 +1,6 @@
 package com.thrivematch.ThriveMatch.dto;
 
-import java.util.ArrayList;
-
-public class UserDetails{
+public class UserDetailsDTO {
     private String username;
     private String email;
     private Integer id;
