@@ -64,7 +64,7 @@ public class StartUpService {
                 UserEntity user = userRepo.findByEmail(username)
                         .orElseThrow(() -> new UsernameNotFoundException("User email "+ username + " not found"));
 
-                if(startUpRepo.existsById(user.getId())){
+                if(startUpRepo.existsByName(name)){
                     response.setSuccess(false);
                     response.setMessage("Startup already exists");
                     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

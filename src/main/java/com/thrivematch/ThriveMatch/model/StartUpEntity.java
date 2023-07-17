@@ -24,7 +24,7 @@ public class StartUpEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate yearFounded;
     @Lob
-    @Column(name = "image", length = 10000)
+    @Column(name = "image")
     private byte[] image;
 
     @ManyToOne
