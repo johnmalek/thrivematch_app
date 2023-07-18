@@ -15,9 +15,23 @@ public class IndividualInvestorEntity {
     private String description;
     private String industry;
     private String email;
-    @Lob
-    @Column(name = "image")
-    private byte[] image;
+    private String picturePath;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    //    @Lob
+//    @Column(name = "image")
+//    private byte[] image;
 
     public Integer getId() {
         return id;
@@ -35,12 +49,12 @@ public class IndividualInvestorEntity {
         this.name = name;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getPicturePath() {
+        return picturePath;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setPicturePath(String picturePath) {
+        this.picturePath = picturePath;
     }
 
     public String getDescription() {

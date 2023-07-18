@@ -33,4 +33,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<InvestorEntity> investors;
 
+    @OneToMany(mappedBy = "user")
+    private List<IndividualInvestorEntity> individualInvestors;
+
 }

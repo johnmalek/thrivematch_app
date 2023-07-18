@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -39,6 +41,7 @@ public class StartUpController {
     //Upload startup information
     @PostMapping("/startups")
     public ResponseEntity<SuccessAndMessage> createStartUp(
+            Principal principal,
             @RequestPart("name") String name,
             @RequestPart("email") String email,
             @RequestPart("desc") String description,
@@ -46,20 +49,21 @@ public class StartUpController {
             @RequestPart("address") String address,
             @RequestPart("poBox") String poBox,
             @RequestPart("year") String year,
-            @RequestPart("image" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
-        return startUpService.createStartUp(name, email, description, industry, address, poBox, year, file);
+            @RequestPart("image") MultipartFile file, @RequestHeader(name = "Authorization") String token) {
+        return startUpService.createStartUp(principal, name, email, description, industry, address, poBox, year, file);
     }
 
     // Return a list of all startups
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @GetMapping("/all_startups")
-    public ResponseEntity<StartUpInfoResponse> getAllStartUps(@RequestHeader(name = "Authorization") String token){
+    public ResponseEntity<StartUpInfoResponse> getAllStartUps(@RequestHeader(name = "Authorization") String token) {
         return startUpService.getAllStartups();
     }
 
     // Return the image belonging to a specific startup
     @GetMapping("/startup/{startupId}/image")
-    public ResponseEntity<?> downloadStartUpImage(@PathVariable Integer startupId) throws IOException{
-        byte[] imageData = imageService.downloadStartUpImage(startupId);
+    public ResponseEntity<?> retrieveStartUpImage(@PathVariable Integer startupId) throws IOException {
+        byte[] imageData = imageService.retrieveStartUpImage(startupId);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);

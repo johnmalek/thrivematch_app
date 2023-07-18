@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ public class InvestorService {
     // Upload investor Information
     @PostMapping("/investors")
     public ResponseEntity<SuccessAndMessage> createInvestor(
+            Principal principal,
             @RequestPart("name") String name,
             @RequestPart("email") String email,
             @RequestPart("desc") String description,
@@ -54,21 +56,17 @@ public class InvestorService {
         SuccessAndMessage response = new SuccessAndMessage();
         
         try{
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if(authentication.getPrincipal() instanceof UserDetails userDetails){
-                // Retrieve authenticated user details
-                String username = userDetails.getUsername();
+            String username = principal.getName();
 
-                // Find the user entity based on username
-                UserEntity user = userRepo.findByEmail(username)
-                        .orElseThrow(() -> new UsernameNotFoundException("User email "+ username + " not found"));
-                
-                if(investorRepo.existsById(user.getId())){
-                    response.setSuccess(false);
-                    response.setMessage("Investor already exists");
-                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-                }
-                byte[] image = imageService.uploadInvestorImage(file).getImage();
+            UserEntity user = userRepo.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User email " + username + " not found"));
+
+            if (investorRepo.existsByName(name)) {
+                response.setSuccess(false);
+                response.setMessage("investor already exists");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+                String picture = imageService.saveFile(file);
                 InvestorEntity investor = new InvestorEntity();
                 investor.setName(name);
                 investor.setEmail(email);
@@ -77,7 +75,7 @@ public class InvestorService {
                 investor.setPoBox(poBox);
                 investor.setAddress(address);
                 investor.setYearFounded(LocalDate.parse(year));
-                investor.setImage(image);
+                investor.setPicturePath(picture);
                 investor.setUser(user);
 
                 InvestorEntity savedStartUp = investorRepo.save(investor);
@@ -91,14 +89,9 @@ public class InvestorService {
                 response.setSuccess(true);
                 response.setMessage("investor created successfully");
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
-                response.setSuccess(false);
-                response.setMessage("StartUp creation failed");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
         } catch (IOException e){
             response.setSuccess(false);
-            response.setMessage("Internal Server Error");
+            response.setMessage("investor creation failed");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -119,7 +112,7 @@ public class InvestorService {
                 investorDetail.setName(investor.getName());
                 investorDetail.setIndustry(investor.getIndustry());
                 investorDetail.setDescription(investor.getDescription());
-                investorDetail.setImage(investor.getImage());
+                investorDetail.setPicturePath(investor.getPicturePath());
                 investorDetails.add(investorDetail);
             }
             for(IndividualInvestorEntity individualInvestor: individualInvestors){
@@ -127,7 +120,7 @@ public class InvestorService {
                 investorDetail.setName(individualInvestor.getName());
                 investorDetail.setDescription(individualInvestor.getDescription());
                 investorDetail.setIndustry(individualInvestor.getIndustry());
-                investorDetail.setImage(individualInvestor.getImage());
+                investorDetail.setPicturePath(individualInvestor.getPicturePath());
                 investorDetails.add(investorDetail);
             }
 

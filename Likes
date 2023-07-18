@@ -1,0 +1,120 @@
+// Create Likes Entity
+@Entity
+public class Likes {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    private Investor investor;
+
+    @ManyToOne
+    private Startup startup;
+
+    // constructors, getters, and setters
+}
+
+// Create Likes Repo
+public interface LikesRepository extends JpaRepository<Likes, Long> {
+    List<Likes> findByInvestor(Investor investor);
+    List<Likes> findByStartup(Startup startup);
+    Likes findByInvestorAndStartup(Investor investor, Startup startup);
+}
+
+// Create Likes Service
+@Service
+public class LikesService {
+    private final LikesRepository likesRepository;
+
+    public LikesService(LikesRepository likesRepository) {
+        this.likesRepository = likesRepository;
+    }
+
+    public Likes saveLike(Investor investor, Startup startup) {
+        Likes like = new Likes();
+        like.setInvestor(investor);
+        like.setStartup(startup);
+        return likesRepository.save(like);
+    }
+
+    public void deleteLike(Investor investor, Startup startup) {
+        Likes like = likesRepository.findByInvestorAndStartup(investor, startup);
+        if (like != null) {
+            likesRepository.delete(like);
+        }
+    }
+
+    public boolean isStartupLikedByInvestor(Investor investor, Startup startup) {
+        return likesRepository.findByInvestorAndStartup(investor, startup) != null;
+    }
+}
+
+// Update Investor and Startup Entities
+@Entity
+public class Investor {
+    // ...
+
+    @OneToMany(mappedBy = "investor")
+    private List<Likes> likes;
+
+    // getters and setters
+}
+
+@Entity
+public class Startup {
+    // ...
+
+    @OneToMany(mappedBy = "startup")
+    private List<Likes> likes;
+
+    // getters and setters
+}
+
+// Create Controller Endpoints
+@RestController
+public class LikesController {
+    private final LikesService likesService;
+
+    public LikesController(LikesService likesService) {
+        this.likesService = likesService;
+    }
+
+    @PostMapping("/investors/{investorId}/startups/{startupId}/like")
+    public ResponseEntity<String> likeStartup(
+            @PathVariable("investorId") Long investorId,
+            @PathVariable("startupId") Long startupId) {
+        // Fetch investor and startup entities based on provided IDs
+        Investor investor = investorService.findById(investorId);
+        Startup startup = startupService.findById(startupId);
+
+        if (investor == null || startup == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Save the like
+        likesService.saveLike(investor, startup);
+        return ResponseEntity.ok("Startup liked successfully.");
+    }
+
+    @DeleteMapping("/investors/{investorId}/startups/{startupId}/like")
+    public ResponseEntity<String> unlikeStartup(
+            @PathVariable("investorId") Long investorId,
+            @PathVariable("startupId") Long startupId) {
+        // Fetch investor and startup entities based on provided IDs
+        Investor investor = investorService.findById(investorId);
+        Startup startup = startupService.findById(startupId);
+
+        if (investor == null || startup == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Delete the like
+        likesService.deleteLike(investor, startup);
+        return ResponseEntity.ok("Startup unliked successfully.");
+    }
+}
+
+
+In the above code, you have the Likes entity that represents the likes between investors and startups. The LikesRepository provides methods for retrieving likes by investor, startup, and combination of both. The LikesService handles the logic for saving and deleting likes, as well as checking if a startup is liked by an investor. Finally, the LikesController defines the endpoints for liking and unliking startups.
+
+Remember to adjust the code according to your specific entity names, endpoints, and any additional business logic requirements you may have.

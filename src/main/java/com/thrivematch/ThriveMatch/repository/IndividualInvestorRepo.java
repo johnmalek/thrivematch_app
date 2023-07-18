@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IndividualInvestorRepo extends JpaRepository<IndividualInvestorEntity, Integer> {
+    boolean existsByName(String name);
 }

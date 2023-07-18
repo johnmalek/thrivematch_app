@@ -4,7 +4,7 @@ public class StartUpDetails {
     private String name;
     private String description;
     private String industry;
-    private byte[] image;
+    private String picturePath;
 
     public String getName() {
         return name;
@@ -30,11 +30,11 @@ public class StartUpDetails {
         this.industry = industry;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getPicturePath() {
+        return picturePath;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setPicturePath(String picturePath) {
+        this.picturePath = picturePath;
     }
 }
