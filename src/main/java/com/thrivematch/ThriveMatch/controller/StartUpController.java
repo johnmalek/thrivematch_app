@@ -62,10 +62,10 @@ public class StartUpController {
 
     // Return the image belonging to a specific startup
     @GetMapping("/startup/{startupId}/image")
-    public ResponseEntity<?> retrieveStartUpImage(@PathVariable Integer startupId) throws IOException {
-        byte[] imageData = imageService.retrieveStartUpImage(startupId);
+    public ResponseEntity<String> retrieveStartUpImage(@PathVariable Integer startupId) throws IOException {
+        String imageData = imageService.retrieveStartUpImage(startupId);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
+                .contentType(MediaType.TEXT_PLAIN)
                 .body(imageData);
     }
 

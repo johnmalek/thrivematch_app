@@ -23,9 +23,6 @@ public class InvestorEntity {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         private LocalDate yearFounded;
         private String picturePath;
-//        @Lob
-//        @Column(name = "image")
-//        private byte[] image;
 
         @OneToMany(mappedBy = "investor")
         private List<LikesEntity> likes;

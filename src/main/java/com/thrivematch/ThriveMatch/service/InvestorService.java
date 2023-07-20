@@ -54,46 +54,40 @@ public class InvestorService {
             @RequestPart("year") String year,
             @RequestPart("image" ) MultipartFile file){
         SuccessAndMessage response = new SuccessAndMessage();
-        
-        try{
-            String username = principal.getName();
 
-            UserEntity user = userRepo.findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User email " + username + " not found"));
+        String username = principal.getName();
 
-            if (investorRepo.existsByName(name)) {
-                response.setSuccess(false);
-                response.setMessage("investor already exists");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
-                String picture = imageService.saveFile(file);
-                InvestorEntity investor = new InvestorEntity();
-                investor.setName(name);
-                investor.setEmail(email);
-                investor.setDescription(description);
-                investor.setIndustry(industry);
-                investor.setPoBox(poBox);
-                investor.setAddress(address);
-                investor.setYearFounded(LocalDate.parse(year));
-                investor.setPicturePath(picture);
-                investor.setUser(user);
+        UserEntity user = userRepo.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User email " + username + " not found"));
 
-                InvestorEntity savedStartUp = investorRepo.save(investor);
-
-                List<InvestorEntity> userInvestors = user.getInvestors();
-                userInvestors.add(investor);  // Associate the startup with the user
-                user.setInvestors(userInvestors);
-
-                userRepo.save(user);
-
-                response.setSuccess(true);
-                response.setMessage("investor created successfully");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IOException e){
+        if (investorRepo.existsByName(name)) {
             response.setSuccess(false);
-            response.setMessage("investor creation failed");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setMessage("investor already exists");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+        String picture = imageService.uploadFile(file);
+        InvestorEntity investor = new InvestorEntity();
+        investor.setName(name);
+        investor.setEmail(email);
+        investor.setDescription(description);
+        investor.setIndustry(industry);
+        investor.setPoBox(poBox);
+        investor.setAddress(address);
+        investor.setYearFounded(LocalDate.parse(year));
+        investor.setPicturePath(picture);
+        investor.setUser(user);
+
+        InvestorEntity savedStartUp = investorRepo.save(investor);
+
+        List<InvestorEntity> userInvestors = user.getInvestors();
+        userInvestors.add(investor);  // Associate the startup with the user
+        user.setInvestors(userInvestors);
+
+        userRepo.save(user);
+
+        response.setSuccess(true);
+        response.setMessage("investor created successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

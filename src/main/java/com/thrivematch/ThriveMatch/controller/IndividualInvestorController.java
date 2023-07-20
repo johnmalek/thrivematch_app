@@ -8,6 +8,7 @@ import com.thrivematch.ThriveMatch.model.UserEntity;
 import com.thrivematch.ThriveMatch.repository.IndividualInvestorRepo;
 import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.service.ImageService;
+import com.thrivematch.ThriveMatch.service.IndividualInvestorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +31,8 @@ public class IndividualInvestorController {
     private IndividualInvestorRepo individualInvestorRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private IndividualInvestorService individualInvestorService;
 
 
     // Upload investor information
@@ -42,50 +45,15 @@ public class IndividualInvestorController {
             @RequestPart("industry") String industry,
             @RequestPart("image" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
         SuccessAndMessage response = new SuccessAndMessage();
-        try{
-            String username = principal.getName();
-
-            UserEntity user = userRepo.findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User email " + username + " not found"));
-
-            if (individualInvestorRepo.existsByName(name)) {
-                response.setSuccess(false);
-                response.setMessage("investor already exists");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
-            String picture = imageService.saveFile(file);
-            IndividualInvestorEntity individualInvestor = new IndividualInvestorEntity();
-            individualInvestor.setName(name);
-            individualInvestor.setEmail(email);
-            individualInvestor.setDescription(description);
-            individualInvestor.setIndustry(industry);
-            individualInvestor.setPicturePath(picture);
-            individualInvestor.setUser(user);
-
-            IndividualInvestorEntity savedIndividualInvestor = individualInvestorRepo.save(individualInvestor);
-
-            List<IndividualInvestorEntity> userIndividualInvestors = user.getIndividualInvestors();
-            userIndividualInvestors.add(individualInvestor);  // Associate the startup with the user
-            user.setIndividualInvestors(userIndividualInvestors);
-
-            userRepo.save(user);
-
-            response.setSuccess(true);
-            response.setMessage("investor created successfully");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IOException e){
-            response.setSuccess(false);
-            response.setMessage("investor creation failed");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return individualInvestorService.createProfile(principal, name, email, description, industry, file);
     }
 
     // Return the image belonging to a specific individual investor
     @GetMapping("/individual_investor/{individualinvestorId}/image")
     public ResponseEntity<?> retrieveIndividualInvestorImage(@PathVariable Integer individualinvestorId) throws IOException{
-        byte[] imageData = imageService.retrieveIndividualInvestorImage(individualinvestorId);
+        String imageData = imageService.retrieveIndividualInvestorImage(individualinvestorId);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
+                .contentType(MediaType.TEXT_PLAIN)
                 .body(imageData);
     }
 }

@@ -58,9 +58,9 @@ public class InvestorController {
     // Return the image belonging to a specific investor
     @GetMapping("/investor/{investorId}/image")
     public ResponseEntity<?> downloadInvestorImage(@PathVariable Integer investorId) throws IOException{
-        byte[] imageData = imageService.retrieveInvestorImage(investorId);
+        String imageData = imageService.retrieveInvestorImage(investorId);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
+                .contentType(MediaType.TEXT_PLAIN)
                 .body(imageData);
     }
 

@@ -56,46 +56,40 @@ public class StartUpService {
             @RequestPart("image" ) MultipartFile file) {
         SuccessAndMessage response = new SuccessAndMessage();
 
-        try {
-            String username = principal.getName();
+        String username = principal.getName();
 
-            UserEntity user = userRepo.findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User email " + username + " not found"));
+        UserEntity user = userRepo.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User email " + username + " not found"));
 
-            if (startUpRepo.existsByName(name)) {
-                response.setSuccess(false);
-                response.setMessage("Startup already exists");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
-
-            String picture = imageService.saveFile(file);
-            StartUpEntity startUp = new StartUpEntity();
-            startUp.setName(name);
-            startUp.setEmail(email);
-            startUp.setDescription(description);
-            startUp.setIndustry(industry);
-            startUp.setPoBox(poBox);
-            startUp.setAddress(address);
-            startUp.setYearFounded(LocalDate.parse(year));
-            startUp.setPicturePath(picture);
-            startUp.setUser(user);
-
-            StartUpEntity savedStartUp = startUpRepo.save(startUp);
-
-            List<StartUpEntity> userStartups = user.getStartups();
-            userStartups.add(startUp);  // Associate the startup with the user
-            user.setStartups(userStartups);
-
-            userRepo.save(user);
-
-            response.setSuccess(true);
-            response.setMessage("StartUp created successfully");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IOException e) {
+        if (startUpRepo.existsByName(name)) {
             response.setSuccess(false);
-            response.setMessage("Internal Server Error");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setMessage("Startup already exists");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+
+        String picture = imageService.uploadFile(file);
+        StartUpEntity startUp = new StartUpEntity();
+        startUp.setName(name);
+        startUp.setEmail(email);
+        startUp.setDescription(description);
+        startUp.setIndustry(industry);
+        startUp.setPoBox(poBox);
+        startUp.setAddress(address);
+        startUp.setYearFounded(LocalDate.parse(year));
+        startUp.setPicturePath(picture);
+        startUp.setUser(user);
+
+        StartUpEntity savedStartUp = startUpRepo.save(startUp);
+
+        List<StartUpEntity> userStartups = user.getStartups();
+        userStartups.add(startUp);  // Associate the startup with the user
+        user.setStartups(userStartups);
+
+        userRepo.save(user);
+
+        response.setSuccess(true);
+        response.setMessage("StartUp created successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // Upload StartUp Docs

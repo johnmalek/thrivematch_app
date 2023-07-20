@@ -29,10 +29,6 @@ public class IndividualInvestorEntity {
         this.user = user;
     }
 
-    //    @Lob
-//    @Column(name = "image")
-//    private byte[] image;
-
     public Integer getId() {
         return id;
     }
