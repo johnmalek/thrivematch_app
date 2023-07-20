@@ -86,7 +86,7 @@ public class LikesController {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         likeService.saveLikes(investor.get(), startUp.get());
-        response.setSuccess(false);
+        response.setSuccess(true);
         response.setMessage("Investor liked successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
