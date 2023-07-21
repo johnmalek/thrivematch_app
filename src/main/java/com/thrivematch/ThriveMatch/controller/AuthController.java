@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -61,18 +62,21 @@ public class AuthController {
         return userService.adminLogin(adminAuthDto);
     }
 
+    @PreAuthorize("hasRole('user')")
     @PostMapping("api/v1/userRegister")
     public ResponseEntity<SuccessAndMessage> userRegister(@Valid @RequestBody UserRegister userRegisterDto) {
         System.out.println("userRegister");
         return userService.userRegister(userRegisterDto);
     }
 
+    @PreAuthorize("hasRole('user')")
     @PostMapping("api/v1/userLogin")
     public ResponseEntity<UserLoginResponse> userLogin(@RequestBody UserLogin userLoginDto) {
         System.out.println("userLogin");
         return userService.userLogin(userLoginDto);
     }
 
+    @PreAuthorize("hasRole('user')")
     @PutMapping("api/v1/updateUser/{id}")
     public ResponseEntity<SuccessAndMessage> updateUser(@PathVariable Integer id, @RequestBody UserUpdate userUpdateDto, @RequestHeader(name="Authorization") String token) {
         System.out.println("userUpdate");

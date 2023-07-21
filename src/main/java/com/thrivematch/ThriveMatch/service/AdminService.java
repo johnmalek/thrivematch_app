@@ -3,6 +3,7 @@ package com.thrivematch.ThriveMatch.service;
 import com.thrivematch.ThriveMatch.dto.*;
 import com.thrivematch.ThriveMatch.model.*;
 import com.thrivematch.ThriveMatch.repository.AdminRepo;
+import com.thrivematch.ThriveMatch.repository.StartUpRepo;
 import com.thrivematch.ThriveMatch.repository.TokenRepo;
 import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.security.CustomUserDetailsService;
@@ -11,10 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,8 +40,13 @@ public class AdminService {
     private JwtGenerator jwtGenerator;
     @Autowired
     private TokenRepo tokenRepo;
+    @Autowired
+    private StartUpRepo startUpRepo;
+    @Autowired
+    private ImageService imageService;
 
 
+    // Register a user
     public ResponseEntity<SuccessAndMessage> registerUser(UserRegister userRegisterDto) {
         SuccessAndMessage response = new SuccessAndMessage();
         if(userRepo.existsByEmail(userRegisterDto.getEmail())) {
@@ -71,6 +83,7 @@ public class AdminService {
         return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
     }
 
+    // Delete a user
     public ResponseEntity<SuccessAndMessage> deleteUser(Integer id) {
         SuccessAndMessage response = new SuccessAndMessage();
         if(!(userRepo.existsById(id))) {
@@ -84,6 +97,7 @@ public class AdminService {
         return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
     }
 
+    // Delete all users
     public ResponseEntity<SuccessAndMessage> deleteAllUsers() {
         System.out.println("deleteAllUsers");
         SuccessAndMessage response = new SuccessAndMessage();
@@ -93,6 +107,7 @@ public class AdminService {
         return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
     }
 
+    // List all users
     public ResponseEntity<AllUserResponse> allUsers(){
         ArrayList<UserEntity> users = new ArrayList<>(userRepo.findAll());
         AllUserResponse allUsersResponse = new AllUserResponse();
@@ -114,5 +129,54 @@ public class AdminService {
         allUsersResponse.setSuccess(false);
         allUsersResponse.setMessage("No User Found");
         return ResponseEntity.badRequest().body(allUsersResponse);
+    }
+
+    // Upload StartUp Information
+    public ResponseEntity<SuccessAndMessage> createStartUp(
+            Principal principal,
+            @RequestPart("name") String name,
+            @RequestPart("email") String email,
+            @RequestPart("desc") String description,
+            @RequestPart("industry") String industry,
+            @RequestPart("address") String address,
+            @RequestPart("poBox") String poBox,
+            @RequestPart("year") String year,
+            @RequestPart("image" ) MultipartFile file) {
+        SuccessAndMessage response = new SuccessAndMessage();
+
+        String username = principal.getName();
+
+        UserEntity user = userRepo.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User email " + username + " not found"));
+
+        if (startUpRepo.existsByName(name)) {
+            response.setSuccess(false);
+            response.setMessage("Startup already exists");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        String picture = imageService.uploadFile(file);
+        StartUpEntity startUp = new StartUpEntity();
+        startUp.setName(name);
+        startUp.setEmail(email);
+        startUp.setDescription(description);
+        startUp.setIndustry(industry);
+        startUp.setPoBox(poBox);
+        startUp.setAddress(address);
+        startUp.setYearFounded(LocalDate.parse(year));
+        startUp.setPicturePath(picture);
+        startUp.setUser(user);
+
+        StartUpEntity savedStartUp = startUpRepo.save(startUp);
+
+        List<StartUpEntity> userStartups = user.getStartups();
+        userStartups.add(startUp);  // Associate the startup with the user
+        user.setStartups(userStartups);
+
+        userRepo.save(user);
+
+        response.setSuccess(true);
+        response.setMessage("StartUp created successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

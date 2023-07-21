@@ -39,7 +39,7 @@ public class StartUpController {
     private DocumentsRepo documentsRepo;
 
     //Upload startup information
-    @PostMapping("/startups")
+    @PostMapping("/add_startup")
     public ResponseEntity<SuccessAndMessage> createStartUp(
             Principal principal,
             @RequestPart("name") String name,
@@ -61,6 +61,7 @@ public class StartUpController {
     }
 
     // Return the image belonging to a specific startup
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @GetMapping("/startup/{startupId}/image")
     public ResponseEntity<String> retrieveStartUpImage(@PathVariable Integer startupId) throws IOException {
         String imageData = imageService.retrieveStartUpImage(startupId);
@@ -76,31 +77,34 @@ public class StartUpController {
     }
 
     //Download a file belonging to a specific startup
-    @GetMapping("/startup/{startupId}/docs/{fileId}")
-    public ResponseEntity<?> downloadFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
-        return startUpService.downloadFile(startupId, fileId);
-    }
+//    @GetMapping("/startup/{startupId}/docs/{fileId}")
+//    public ResponseEntity<?> downloadFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
+//        return startUpService.downloadFile(startupId, fileId);
+//    }
 
     //Return a list of files belonging to a specific startup
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @GetMapping("/startup/{startupId}/allFiles")
     public ResponseEntity<?> allFiles(@PathVariable Integer startupId){
         return startUpService.allFiles(startupId);
     }
 
     // Startup delete one file
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @DeleteMapping("/startup/{startupId}/deleteOneFile/{fileId}")
     public ResponseEntity<SuccessAndMessage> deleteOneFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
         return startUpService.deleteOneFile(startupId, fileId);
     }
 
-
     // Startup delete all files
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @DeleteMapping("/startup/{startupId}/deleteAllFiles")
     public ResponseEntity<SuccessAndMessage> deleteAllFiles(@PathVariable Integer startupId) throws IOException{
         return startUpService.deleteAllFiles(startupId);
     }
 
      //Return a list of investors that have liked the startup
+     @PreAuthorize("hasRole('admin') or hasRole('user')")
     @GetMapping("/startups/{startupId}/likes")
     public ResponseEntity<?> likes(@PathVariable Integer startupId){
         return startUpService.likes(startupId);

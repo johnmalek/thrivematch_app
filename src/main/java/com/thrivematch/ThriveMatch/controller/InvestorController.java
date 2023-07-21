@@ -34,7 +34,8 @@ public class InvestorController {
 
 
     // Upload investor Information
-    @PostMapping("/investors")
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
+    @PostMapping("/add_investor")
     public ResponseEntity<SuccessAndMessage> createInvestor(
             Principal principal,
             @RequestPart("name") String name,
@@ -56,6 +57,7 @@ public class InvestorController {
     }
 
     // Return the image belonging to a specific investor
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @GetMapping("/investor/{investorId}/image")
     public ResponseEntity<?> downloadInvestorImage(@PathVariable Integer investorId) throws IOException{
         String imageData = imageService.retrieveInvestorImage(investorId);
@@ -65,6 +67,7 @@ public class InvestorController {
     }
 
     //Return a list of investors that have liked the startup
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @GetMapping("/investors/{investorId}/likes")
     public ResponseEntity<?> likes(@PathVariable Integer investorId){
         return investorService.likes(investorId);

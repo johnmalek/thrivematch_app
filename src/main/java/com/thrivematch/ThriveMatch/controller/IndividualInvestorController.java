@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,7 @@ public class IndividualInvestorController {
 
 
     // Upload investor information
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @PostMapping("/individual_investor")
     public ResponseEntity<SuccessAndMessage> createProfile(
             Principal principal,
@@ -49,6 +51,7 @@ public class IndividualInvestorController {
     }
 
     // Return the image belonging to a specific individual investor
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     @GetMapping("/individual_investor/{individualinvestorId}/image")
     public ResponseEntity<?> retrieveIndividualInvestorImage(@PathVariable Integer individualinvestorId) throws IOException{
         String imageData = imageService.retrieveIndividualInvestorImage(individualinvestorId);

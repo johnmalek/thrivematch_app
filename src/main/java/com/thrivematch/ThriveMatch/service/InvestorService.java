@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class InvestorService {
@@ -127,14 +128,20 @@ public class InvestorService {
     }
 
     //Return a list of investors that have liked the startup
-    public ResponseEntity<?> likes(@PathVariable Integer investorId){
+    public ResponseEntity<List<LikesDTO>> likes(@PathVariable Integer investorId){
         Optional<InvestorEntity> investor = investorRepo.findById(investorId);
 
         if(investor.isEmpty()){
             return ResponseEntity.notFound().build();
         }
-        List<LikesEntity> likedInvestors = investor.get().getLikes();
-        return ResponseEntity.ok(likedInvestors);
+        List<LikesEntity> likedInvestors = new ArrayList<>(investor.get().getLikes());
+        List<LikesDTO> likesDTOList = likedInvestors.stream()
+                .map(likesEntity -> new LikesDTO(likesEntity.getInvestor().getName()))
+                .collect(Collectors.toList());
+
+        System.out.println(likesDTOList.size());
+
+        return ResponseEntity.ok(likesDTOList);
     }
     
 }

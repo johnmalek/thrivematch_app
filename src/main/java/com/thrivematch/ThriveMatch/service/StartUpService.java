@@ -1,9 +1,6 @@
 package com.thrivematch.ThriveMatch.service;
 
-import com.thrivematch.ThriveMatch.dto.StartUpDetails;
-import com.thrivematch.ThriveMatch.dto.StartUpInfoResponse;
-import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
-import com.thrivematch.ThriveMatch.dto.UserDetailsDTO;
+import com.thrivematch.ThriveMatch.dto.*;
 import com.thrivematch.ThriveMatch.model.DocumentsEntity;
 import com.thrivematch.ThriveMatch.model.LikesEntity;
 import com.thrivematch.ThriveMatch.model.StartUpEntity;
@@ -29,6 +26,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StartUpService {
@@ -92,32 +90,6 @@ public class StartUpService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // Upload StartUp Docs
-    public ResponseEntity<SuccessAndMessage> uploadDocs(@PathVariable Integer startupId, @RequestPart("file") MultipartFile file) throws IOException {
-        SuccessAndMessage response = new SuccessAndMessage();
-        try {
-            if (documentsRepo.existsByFilePath(file.getOriginalFilename())) {
-                response.setSuccess(false);
-                response.setMessage("File exists");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
-            StartUpEntity startup = startUpRepo.findById(startupId).orElseThrow();
-            String filePath = documentService.saveFile(file);
-            DocumentsEntity documentsEntity = new DocumentsEntity();
-            documentsEntity.setFilePath(filePath);
-            documentsEntity.setStartup(startup);
-
-            documentsRepo.save(documentsEntity);
-            response.setSuccess(true);
-            response.setMessage("File uploaded successfully");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IOException e) {
-            response.setSuccess(false);
-            response.setMessage("Internal Server Error");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     // Return a list of all startups
     public ResponseEntity<StartUpInfoResponse> getAllStartups(){
         ArrayList<StartUpEntity> startups = new ArrayList<>(startUpRepo.findAll());
@@ -143,48 +115,68 @@ public class StartUpService {
         return ResponseEntity.badRequest().body(startUpInfoResponse);
     }
 
-    //Download a file belonging to a specific startup
-    public ResponseEntity<?> downloadFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
-        StartUpEntity startup = startUpRepo.findById(startupId).orElse(null);
-        if (startup == null) {
-            // Handle startup not found error
-            return ResponseEntity.notFound().build();
-        }
+    // Upload StartUp Docs
+    public ResponseEntity<SuccessAndMessage> uploadDocs(@PathVariable Integer startupId, @RequestPart("file") MultipartFile file) throws IOException {
+        SuccessAndMessage response = new SuccessAndMessage();
+        StartUpEntity startup = startUpRepo.findById(startupId).orElseThrow();
+//        if (documentsRepo.existsByFilePath(file.getOriginalFilename())) {
+//            response.setSuccess(false);
+//            response.setMessage("File exists");
+//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//        }
+        String filePath = documentService.uploadFile(file);
+        DocumentsEntity documentsEntity = new DocumentsEntity();
+        documentsEntity.setFilePath(filePath);
+        documentsEntity.setStartup(startup);
 
-        // Check if the startup has any documents
-        List<DocumentsEntity> documents = startup.getDocuments();
-        if (documents == null || documents.isEmpty()) {
-            // Handle no documents found error
-            return ResponseEntity.notFound().build();
-        }
-
-        DocumentsEntity document = documentsRepo.findById(fileId).orElseThrow();
-        if (document == null || !documents.contains(document)) {
-            // Handle document not found or not associated with the startup error
-            return ResponseEntity.notFound().build();
-        }
-
-        byte[] fileData = documentService.downloadFile(fileId);
-
-        // Determine the content type based on the file extension
-        String contentType;
-        String filename = document.getFilePath();
-        if (filename.endsWith(".png")) {
-            contentType = "image/png";
-        } else if (filename.endsWith(".jpg") || filename.endsWith(".jpeg")) {
-            contentType = "image/jpeg";
-        } else if (filename.endsWith(".pdf")) {
-            contentType = "application/pdf";
-        } else if (filename.endsWith(".docx")) {
-            contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-        } else {
-            contentType = "application/octet-stream";
-        }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .body(fileData);
+        documentsRepo.save(documentsEntity);
+        response.setSuccess(true);
+        response.setMessage("File uploaded successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    //Download a file belonging to a specific startup
+//    public ResponseEntity<?> downloadFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
+//        StartUpEntity startup = startUpRepo.findById(startupId).orElse(null);
+//        if (startup == null) {
+//            // Handle startup not found error
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        // Check if the startup has any documents
+//        List<DocumentsEntity> documents = startup.getDocuments();
+//        if (documents == null || documents.isEmpty()) {
+//            // Handle no documents found error
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        DocumentsEntity document = documentsRepo.findById(fileId).orElseThrow();
+//        if (document == null || !documents.contains(document)) {
+//            // Handle document not found or not associated with the startup error
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        byte[] fileData = documentService.downloadFile(fileId);
+//
+//        // Determine the content type based on the file extension
+//        String contentType;
+//        String filename = document.getFilePath();
+//        if (filename.endsWith(".png")) {
+//            contentType = "image/png";
+//        } else if (filename.endsWith(".jpg") || filename.endsWith(".jpeg")) {
+//            contentType = "image/jpeg";
+//        } else if (filename.endsWith(".pdf")) {
+//            contentType = "application/pdf";
+//        } else if (filename.endsWith(".docx")) {
+//            contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+//        } else {
+//            contentType = "application/octet-stream";
+//        }
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(contentType))
+//                .body(fileData);
+//    }
 
     //Return a list of files belonging to a specific startup
     public ResponseEntity<?> allFiles(@PathVariable Integer startupId){
@@ -248,14 +240,20 @@ public class StartUpService {
     }
 
     //Return a list of investors that have liked the startup
-    public ResponseEntity<?> likes(@PathVariable Integer startupId){
+    public ResponseEntity<List<LikesDTO>> likes(@PathVariable Integer startupId){
         Optional<StartUpEntity> startup = startUpRepo.findById(startupId);
 
         if(startup.isEmpty()){
             return ResponseEntity.notFound().build();
         }
-        List<LikesEntity> likedInvestors = startup.get().getLikes();
-        return ResponseEntity.ok(likedInvestors);
+        List<LikesEntity> likedInvestors = new ArrayList<>(startup.get().getLikes());
+        List<LikesDTO> likesDTOList = likedInvestors.stream()
+                        .map(likesEntity -> new LikesDTO(likesEntity.getInvestor().getName()))
+                                .collect(Collectors.toList());
+
+        System.out.println(likesDTOList.size());
+
+        return ResponseEntity.ok(likesDTOList);
     }
 
 }

@@ -70,55 +70,5 @@ public class ImageService {
         Optional<IndividualInvestorEntity> fileData = individualInvestorRepo.findById(id);
         return fileData.get().getPicturePath();
     }
-
-
-
-
-
-
-
-
-
-//    // Upload StartUp Image
-//    public StartUpEntity uploadStartUpImage(MultipartFile file) throws IOException{
-//        StartUpEntity startUp = new StartUpEntity();
-//        startUp.setImage(ImageUtils.compressImage(file.getBytes()));
-//        return startUpRepo.save(startUp);
-//    }
-//
-//    // Download StartUp Image
-//    public byte[] downloadStartUpImage(Integer id) throws IOException {
-//        Optional<StartUpEntity> startUp = startUpRepo.findById(id);
-//        byte[] startUpImage = startUp.get().getImage();
-//        return ImageUtils.decompressImage(startUpImage);
-//    }
-//
-//    // Upload Investor Image
-//    public InvestorEntity uploadInvestorImage(MultipartFile file) throws IOException{
-//        InvestorEntity investor = new InvestorEntity();
-//        investor.setImage(ImageUtils.compressImage(file.getBytes()));
-//        return investorRepo.save(investor);
-//    }
-//
-//    // Download Investor Image
-//    public byte[] downloadInvestorImage(Integer id) throws IOException {
-//        Optional<InvestorEntity> investor = investorRepo.findById(id);
-//        byte[] investorImage = investor.get().getImage();
-//        return ImageUtils.decompressImage(investorImage);
-//    }
-//
-//    // Upload Individual Investor Image
-//    public IndividualInvestorEntity uploadIndividualInvestorImage(MultipartFile file) throws IOException{
-//        IndividualInvestorEntity individualInvestor = new IndividualInvestorEntity();
-//        individualInvestor.setImage(ImageUtils.compressImage(file.getBytes()));
-//        return individualInvestorRepo.save(individualInvestor);
-//    }
-//
-//    // Download Individual Investor Image
-//    public byte[] downloadIndividualInvestorImage(Integer id) throws IOException {
-//        Optional<IndividualInvestorEntity> individualInvestor =  individualInvestorRepo.findById(id);
-//        byte[] individualInvestorImage = individualInvestor.get().getImage();
-//        return ImageUtils.decompressImage(individualInvestorImage);
-//    }
 }
 

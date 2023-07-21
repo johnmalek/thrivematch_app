@@ -7,16 +7,20 @@ import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.security.CustomUserDetailsService;
 import com.thrivematch.ThriveMatch.security.JwtGenerator;
 import com.thrivematch.ThriveMatch.service.AdminService;
+import com.thrivematch.ThriveMatch.service.StartUpService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,32 +46,51 @@ public class AdminController {
     private AdminService adminService;
 
 
+    @PreAuthorize("hasRole('admin')")
     @PostMapping("/registerUser")
     public ResponseEntity<SuccessAndMessage> registerUser(@RequestBody UserRegister userRegisterDto, @RequestHeader(name="Authorization") String token) {
         return adminService.registerUser(userRegisterDto);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<SuccessAndMessage> updateUser(@PathVariable Integer id, @RequestBody UserUpdate userUpdateDto, @RequestHeader(name="Authorization") String token) {
         System.out.println("userUpdate");
         return adminService.updateUser(id, userUpdateDto);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<SuccessAndMessage> deleteUser(@PathVariable Integer id, @RequestHeader(name="Authorization") String token) {
         System.out.println("deleteUser");
         return adminService.deleteUser(id);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/deleteAllUsers")
     public ResponseEntity<SuccessAndMessage> deleteAllUsers(@RequestHeader(name="Authorization") String token) {
         System.out.println("deleteAllUsers");
         return adminService.deleteAllUsers();
     }
 
+    @PreAuthorize("hasRole('admin')")
     @GetMapping("/allUsers")
     public ResponseEntity<AllUserResponse> allUsers(@RequestHeader(name="Authorization") String token) {
         System.out.println("allUsers");
         return adminService.allUsers();
+    }
+
+    @PostMapping("/add_startup")
+    public ResponseEntity<SuccessAndMessage> createStartUp(
+            Principal principal,
+            @RequestPart("name") String name,
+            @RequestPart("email") String email,
+            @RequestPart("desc") String description,
+            @RequestPart("industry") String industry,
+            @RequestPart("address") String address,
+            @RequestPart("poBox") String poBox,
+            @RequestPart("year") String year,
+            @RequestPart("image") MultipartFile file, @RequestHeader(name = "Authorization") String token) {
+        return adminService.createStartUp(principal, name, email, description, industry, address, poBox, year, file);
     }
 }
