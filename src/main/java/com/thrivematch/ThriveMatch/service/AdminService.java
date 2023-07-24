@@ -2,10 +2,7 @@ package com.thrivematch.ThriveMatch.service;
 
 import com.thrivematch.ThriveMatch.dto.*;
 import com.thrivematch.ThriveMatch.model.*;
-import com.thrivematch.ThriveMatch.repository.AdminRepo;
-import com.thrivematch.ThriveMatch.repository.StartUpRepo;
-import com.thrivematch.ThriveMatch.repository.TokenRepo;
-import com.thrivematch.ThriveMatch.repository.UserRepo;
+import com.thrivematch.ThriveMatch.repository.*;
 import com.thrivematch.ThriveMatch.security.CustomUserDetailsService;
 import com.thrivematch.ThriveMatch.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +40,8 @@ public class AdminService {
     private TokenRepo tokenRepo;
     @Autowired
     private StartUpRepo startUpRepo;
+    @Autowired
+    private InvestorRepo investorRepo;
     @Autowired
     private ImageService imageService;
 
@@ -131,7 +131,7 @@ public class AdminService {
         return ResponseEntity.badRequest().body(allUsersResponse);
     }
 
-    // Upload StartUp Information
+//     Upload StartUp Information
     public ResponseEntity<SuccessAndMessage> createStartUp(
             Principal principal,
             @RequestPart("name") String name,
@@ -146,8 +146,8 @@ public class AdminService {
 
         String username = principal.getName();
 
-        UserEntity user = userRepo.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User email " + username + " not found"));
+        AdminEntity admin = adminRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Admin email " + username + " not found"));
 
         if (startUpRepo.existsByName(name)) {
             response.setSuccess(false);
@@ -165,18 +165,67 @@ public class AdminService {
         startUp.setAddress(address);
         startUp.setYearFounded(LocalDate.parse(year));
         startUp.setPicturePath(picture);
-        startUp.setUser(user);
+        startUp.setAdmin(admin);
 
         StartUpEntity savedStartUp = startUpRepo.save(startUp);
 
-        List<StartUpEntity> userStartups = user.getStartups();
-        userStartups.add(startUp);  // Associate the startup with the user
-        user.setStartups(userStartups);
+        List<StartUpEntity> adminStartups = admin.getStartups();
+        adminStartups.add(startUp);  // Associate the startup with the user
+        admin.setStartups(adminStartups);
 
-        userRepo.save(user);
+        adminRepo.save(admin);
 
         response.setSuccess(true);
         response.setMessage("StartUp created successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+//   Upload investor Information
+    public ResponseEntity<SuccessAndMessage> createInvestor(
+            Principal principal,
+            @RequestPart("name") String name,
+            @RequestPart("email") String email,
+            @RequestPart("desc") String description,
+            @RequestPart("industry") String industry,
+            @RequestPart("address") String address,
+            @RequestPart("poBox") String poBox,
+            @RequestPart("year") String year,
+            @RequestPart("image" ) MultipartFile file){
+        SuccessAndMessage response = new SuccessAndMessage();
+
+        String username = principal.getName();
+
+        AdminEntity admin = adminRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Admin email " + username + " not found"));
+
+        if (investorRepo.existsByName(name)) {
+            response.setSuccess(false);
+            response.setMessage("investor already exists");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        String picture = imageService.uploadFile(file);
+        InvestorEntity investor = new InvestorEntity();
+        investor.setName(name);
+        investor.setEmail(email);
+        investor.setDescription(description);
+        investor.setIndustry(industry);
+        investor.setPoBox(poBox);
+        investor.setAddress(address);
+        investor.setYearFounded(LocalDate.parse(year));
+        investor.setPicturePath(picture);
+        investor.setAdmins(admin);
+
+        InvestorEntity savedStartUp = investorRepo.save(investor);
+
+        List<InvestorEntity> adminInvestors = admin.getInvestors();
+        adminInvestors.add(investor);  // Associate the startup with the user
+        admin.setInvestors(adminInvestors);
+
+        adminRepo.save(admin);
+
+        response.setSuccess(true);
+        response.setMessage("investor created successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

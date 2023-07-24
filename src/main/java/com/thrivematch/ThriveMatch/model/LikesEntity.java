@@ -2,6 +2,9 @@ package com.thrivematch.ThriveMatch.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
@@ -36,11 +39,11 @@ public class LikesEntity {
         this.investor = investor;
     }
 
-    public StartUpEntity getStartUp() {
+    public StartUpEntity getStartup() {
         return startup;
     }
 
-    public void setStartUp(StartUpEntity startup) {
-        this.startup = startup;
+    public void setStartUp(StartUpEntity startUp) {
+        this.startup = startUp;
     }
 }

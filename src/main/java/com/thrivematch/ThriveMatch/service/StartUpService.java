@@ -101,6 +101,7 @@ public class StartUpService {
             StartUpDetails startUpDetail;
             for(StartUpEntity startUp: startups){
                 startUpDetail = new StartUpDetails();
+                startUpDetail.setId(startUp.getId());
                 startUpDetail.setName(startUp.getName());
                 startUpDetail.setIndustry(startUp.getIndustry());
                 startUpDetail.setDescription(startUp.getDescription());
@@ -248,7 +249,7 @@ public class StartUpService {
         }
         List<LikesEntity> likedInvestors = new ArrayList<>(startup.get().getLikes());
         List<LikesDTO> likesDTOList = likedInvestors.stream()
-                        .map(likesEntity -> new LikesDTO(likesEntity.getInvestor().getName()))
+                        .map(likesEntity -> new LikesDTO(likesEntity.getInvestor().getName(), likesEntity.getInvestor().getPicturePath()))
                                 .collect(Collectors.toList());
 
         System.out.println(likesDTOList.size());

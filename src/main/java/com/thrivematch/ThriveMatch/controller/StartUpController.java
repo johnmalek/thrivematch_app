@@ -39,6 +39,7 @@ public class StartUpController {
     private DocumentsRepo documentsRepo;
 
     //Upload startup information
+    @PreAuthorize("hasRole('user')")
     @PostMapping("/add_startup")
     public ResponseEntity<SuccessAndMessage> createStartUp(
             Principal principal,

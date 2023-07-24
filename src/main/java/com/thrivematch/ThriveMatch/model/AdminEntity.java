@@ -1,6 +1,9 @@
 package com.thrivematch.ThriveMatch.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -15,6 +18,12 @@ public class AdminEntity {
 
     @OneToMany(mappedBy = "admin")
     private List<TokenEntity> tokens;
+
+    @OneToMany(mappedBy = "admin")
+    private List<StartUpEntity> startups;
+
+    @OneToMany(mappedBy = "admins")
+    private List<InvestorEntity> investors;
 
     public Integer getId() {
         return id;
@@ -38,5 +47,29 @@ public class AdminEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<TokenEntity> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<TokenEntity> tokens) {
+        this.tokens = tokens;
+    }
+
+    public List<StartUpEntity> getStartups() {
+        return startups;
+    }
+
+    public void setStartups(List<StartUpEntity> startups) {
+        this.startups = startups;
+    }
+
+    public List<InvestorEntity> getInvestors() {
+        return investors;
+    }
+
+    public void setInvestors(List<InvestorEntity> investors) {
+        this.investors = investors;
     }
 }

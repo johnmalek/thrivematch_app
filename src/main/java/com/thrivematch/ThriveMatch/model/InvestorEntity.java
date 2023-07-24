@@ -3,6 +3,9 @@ package com.thrivematch.ThriveMatch.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,6 +34,10 @@ public class InvestorEntity {
         @JoinColumn(name = "user_id")
         private UserEntity user;
 
+        @ManyToOne
+        @JoinColumn(name = "admin_id")
+        private AdminEntity admins;
+
         @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
         @JoinTable(name = "investor_startups",
                 joinColumns = {
@@ -42,6 +49,7 @@ public class InvestorEntity {
         )
         private Set<StartUpEntity> startups;
 
+
         public Integer getId() {
                 return id;
         }
@@ -52,6 +60,14 @@ public class InvestorEntity {
 
         public String getName() {
                 return name;
+        }
+
+        public AdminEntity getAdmins() {
+                return admins;
+        }
+
+        public void setAdmins(AdminEntity admins) {
+                this.admins = admins;
         }
 
         public void setName(String name) {
@@ -114,20 +130,20 @@ public class InvestorEntity {
                 this.picturePath = picturePath;
         }
 
-        public UserEntity getUser() {
-                return user;
-        }
-
-        public void setUser(UserEntity user) {
-                this.user = user;
-        }
-
         public List<LikesEntity> getLikes() {
                 return likes;
         }
 
         public void setLikes(List<LikesEntity> likes) {
                 this.likes = likes;
+        }
+
+        public UserEntity getUser() {
+                return user;
+        }
+
+        public void setUser(UserEntity user) {
+                this.user = user;
         }
 
         public Set<StartUpEntity> getStartups() {

@@ -43,7 +43,6 @@ public class InvestorService {
 
 
     // Upload investor Information
-    @PostMapping("/investors")
     public ResponseEntity<SuccessAndMessage> createInvestor(
             Principal principal,
             @RequestPart("name") String name,
@@ -104,6 +103,7 @@ public class InvestorService {
             InvestorDetails investorDetail;
             for(InvestorEntity investor: investors){
                 investorDetail = new InvestorDetails();
+                investorDetail.setId(investor.getId());
                 investorDetail.setName(investor.getName());
                 investorDetail.setIndustry(investor.getIndustry());
                 investorDetail.setDescription(investor.getDescription());
@@ -112,6 +112,7 @@ public class InvestorService {
             }
             for(IndividualInvestorEntity individualInvestor: individualInvestors){
                 investorDetail = new InvestorDetails();
+                investorDetail.setId(investorDetail.getId());
                 investorDetail.setName(individualInvestor.getName());
                 investorDetail.setDescription(individualInvestor.getDescription());
                 investorDetail.setIndustry(individualInvestor.getIndustry());
@@ -136,7 +137,7 @@ public class InvestorService {
         }
         List<LikesEntity> likedInvestors = new ArrayList<>(investor.get().getLikes());
         List<LikesDTO> likesDTOList = likedInvestors.stream()
-                .map(likesEntity -> new LikesDTO(likesEntity.getInvestor().getName()))
+                .map(likesEntity -> new LikesDTO(likesEntity.getInvestor().getName(), likesEntity.getInvestor().getPicturePath()))
                 .collect(Collectors.toList());
 
         System.out.println(likesDTOList.size());

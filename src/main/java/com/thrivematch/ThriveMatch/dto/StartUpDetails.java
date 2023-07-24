@@ -1,6 +1,7 @@
 package com.thrivematch.ThriveMatch.dto;
 
 public class StartUpDetails {
+    private Integer id;
     private String name;
     private String description;
     private String industry;
@@ -8,6 +9,14 @@ public class StartUpDetails {
 
     public String getName() {
         return name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setName(String name) {

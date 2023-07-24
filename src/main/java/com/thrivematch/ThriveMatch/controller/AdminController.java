@@ -80,6 +80,7 @@ public class AdminController {
         return adminService.allUsers();
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PostMapping("/add_startup")
     public ResponseEntity<SuccessAndMessage> createStartUp(
             Principal principal,
@@ -92,5 +93,20 @@ public class AdminController {
             @RequestPart("year") String year,
             @RequestPart("image") MultipartFile file, @RequestHeader(name = "Authorization") String token) {
         return adminService.createStartUp(principal, name, email, description, industry, address, poBox, year, file);
+    }
+
+    @PreAuthorize("hasRole('admin')")
+    @PostMapping("/add_investor")
+    public ResponseEntity<SuccessAndMessage> createInvestor(
+            Principal principal,
+            @RequestPart("name") String name,
+            @RequestPart("email") String email,
+            @RequestPart("desc") String description,
+            @RequestPart("industry") String industry,
+            @RequestPart("address") String address,
+            @RequestPart("poBox") String poBox,
+            @RequestPart("year") String year,
+            @RequestPart("image") MultipartFile file, @RequestHeader(name = "Authorization") String token) {
+        return adminService.createInvestor(principal, name, email, description, industry, address, poBox, year, file);
     }
 }

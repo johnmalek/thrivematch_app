@@ -1,14 +1,22 @@
 package com.thrivematch.ThriveMatch.dto;
 
 public class InvestorDetails {
+    private Integer id;
     private String name;
     private String description;
     private String industry;
     private String picturePath;
-//    private byte[] image;
 
     public String getName() {
         return name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setName(String name) {

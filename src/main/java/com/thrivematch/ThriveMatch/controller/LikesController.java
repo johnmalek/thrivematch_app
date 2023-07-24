@@ -34,10 +34,13 @@ public class LikesController {
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
         SuccessAndMessage response = new SuccessAndMessage();
 
-        if(investor.isEmpty() || startUp.isEmpty()){
+        if(investor.isEmpty()){
             response.setSuccess(false);
-            response.setMessage("Investor or startup does noy exist");
+            response.setMessage("Investor does noy exist");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } else if (startUp.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("Startup does not exist");
         }
         if(likeService.isStartupLikedByInvestor(investor.get(), startUp.get())){
             response.setSuccess(false);
@@ -57,10 +60,13 @@ public class LikesController {
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
         SuccessAndMessage response = new SuccessAndMessage();
 
-        if(investor.isEmpty() || startUp.isEmpty()){
+        if(investor.isEmpty()){
             response.setSuccess(false);
-            response.setMessage("Investor or startup does not exist");
+            response.setMessage("Investor does not exist");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } else if (startUp.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("Startup does not exist");
         }
         likeService.deleteLikes(investor.get(), startUp.get());
         response.setSuccess(false);
@@ -75,10 +81,13 @@ public class LikesController {
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
         SuccessAndMessage response = new SuccessAndMessage();
 
-        if(investor.isEmpty() || startUp.isEmpty()){
+        if(investor.isEmpty()){
             response.setSuccess(false);
-            response.setMessage("Investor or startup does noy exist");
+            response.setMessage("Investor does noy exist");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } else if (startUp.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("Startup does not exist");
         }
         if(likeService.isInvestorLikedByStartup(startUp.get(), investor.get())){
             response.setSuccess(false);
@@ -98,9 +107,13 @@ public class LikesController {
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
         SuccessAndMessage response = new SuccessAndMessage();
 
-        if(investor.isEmpty() || startUp.isEmpty()){
+        if(investor.isEmpty()){
             response.setSuccess(false);
-            response.setMessage("Investor or startup does not exist");
+            response.setMessage("Investor does not exist");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } else if(startUp.isEmpty()){
+            response.setSuccess(false);
+            response.setMessage("Startup does not exist");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         likeService.deleteLikes(investor.get(), startUp.get());

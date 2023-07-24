@@ -3,6 +3,9 @@ package com.thrivematch.ThriveMatch.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,6 +32,10 @@ public class StartUpEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private AdminEntity admin;
+
     @OneToMany(mappedBy = "startup")
     private List<LikesEntity> likes;
 
@@ -38,29 +45,6 @@ public class StartUpEntity {
     @ManyToMany(mappedBy = "startups", fetch = FetchType.LAZY)
     private Set<InvestorEntity> investors;
 
-    public List<LikesEntity> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(List<LikesEntity> likes) {
-        this.likes = likes;
-    }
-
-    public List<DocumentsEntity> getDocuments() {
-        return documents;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public void setDocuments(List<DocumentsEntity> documents) {
-        this.documents = documents;
-    }
 
     public Integer getId() {
         return id;
@@ -74,24 +58,16 @@ public class StartUpEntity {
         return name;
     }
 
+    public AdminEntity getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(AdminEntity admin) {
+        this.admin = admin;
+    }
+
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPicturePath() {
-        return picturePath;
-    }
-
-    public void setPicturePath(String picturePath) {
-        this.picturePath = picturePath;
-    }
-
-    public Set<InvestorEntity> getInvestors() {
-        return investors;
-    }
-
-    public void setInvestors(Set<InvestorEntity> investors) {
-        this.investors = investors;
     }
 
     public String getDescription() {
@@ -140,5 +116,45 @@ public class StartUpEntity {
 
     public void setYearFounded(LocalDate yearFounded) {
         this.yearFounded = yearFounded;
+    }
+
+    public String getPicturePath() {
+        return picturePath;
+    }
+
+    public void setPicturePath(String picturePath) {
+        this.picturePath = picturePath;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public List<LikesEntity> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<LikesEntity> likes) {
+        this.likes = likes;
+    }
+
+    public List<DocumentsEntity> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<DocumentsEntity> documents) {
+        this.documents = documents;
+    }
+
+    public Set<InvestorEntity> getInvestors() {
+        return investors;
+    }
+
+    public void setInvestors(Set<InvestorEntity> investors) {
+        this.investors = investors;
     }
 }

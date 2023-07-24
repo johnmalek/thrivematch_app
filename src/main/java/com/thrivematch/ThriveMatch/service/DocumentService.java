@@ -50,19 +50,4 @@ public class DocumentService {
         fos.close();
         return convFile;
     }
-
-//    public String saveFile(MultipartFile file) throws IOException {
-//        String fileName = file.getOriginalFilename();
-//        String uploadDirectory = "/home/johnmalek/Desktop/Malek/SpringBoot/ThriveMatch/src/main/java/com/thrivematch/ThriveMatch/StartUpFiles/";
-//        String filePath = uploadDirectory+fileName;
-//
-//        file.transferTo(new File(filePath));
-//        return filePath;
-//    }
-//
-//    public byte[] downloadFile(Integer id) throws IOException {
-//        Optional<DocumentsEntity> file = documentsRepo.findById(id);
-//        String filePath = file.get().getFilePath();
-//        return Files.readAllBytes(new File(filePath).toPath());
-//    }
 }
