@@ -167,8 +167,11 @@ public class AdminService {
         startUp.setAddress(address);
         startUp.setYearFounded(LocalDate.parse(year));
         startUp.setPicturePath(picture);
+        startUp.setDateCreated(LocalDate.now());
+        startUp.setCreatedByAdmin(true);
         startUp.setAdmin(admin);
 
+        admin.updateHasCreatedStartup();
         StartUpEntity savedStartUp = startUpRepo.save(startUp);
 
         List<StartUpEntity> adminStartups = admin.getStartups();
@@ -215,8 +218,10 @@ public class AdminService {
         investor.setAddress(address);
         investor.setYearFounded(LocalDate.parse(year));
         investor.setPicturePath(picture);
+        investor.setDateCreated(LocalDate.now());
         investor.setAdmins(admin);
 
+        admin.updateHasCreatedInvestor();
         InvestorEntity savedStartUp = investorRepo.save(investor);
 
         List<InvestorEntity> adminInvestors = admin.getInvestors();
@@ -245,7 +250,7 @@ public class AdminService {
                 investorDetail.setId(investor.getId());
                 investorDetail.setName(investor.getName());
                 investorDetail.setDateCreated(investor.getDateCreated());
-                investorDetail.setAddress(investor.getAddress());
+                investorDetail.setLocation(investor.getAddress());
                 investorDetail.setEmail(investor.getEmail());
                 investorDetail.setIndustry(investor.getIndustry());
                 investorDetails.add(investorDetail);
@@ -255,6 +260,8 @@ public class AdminService {
                 investorDetail.setId(individualInvestor.getId());
                 investorDetail.setName(individualInvestor.getName());
                 investorDetail.setIndustry(individualInvestor.getIndustry());
+                investorDetail.setEmail(individualInvestor.getEmail());
+                investorDetail.setLocation(individualInvestor.getAddress());
                 investorDetail.setDateCreated(individualInvestor.getDateCreated());
                 investorDetails.add(investorDetail);
             }

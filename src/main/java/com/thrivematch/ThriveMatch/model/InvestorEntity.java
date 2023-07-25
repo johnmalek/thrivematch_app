@@ -64,7 +64,9 @@ public class InvestorEntity {
         @PostPersist
         public void updateOwnerHasCreatedInvestor() {
                 this.createdByAdmin = false; // Assuming this investor is created by the user
-                user.updateHasCreatedInvestor();
+                if(this.user != null){
+                        user.updateHasCreatedInvestor();
+                }
         }
 
         public Integer getId() {

@@ -15,6 +15,7 @@ public class IndividualInvestorEntity {
     private String name;
     private String description;
     private String industry;
+    private String address;
     private String email;
     private String picturePath;
     @Column(name = "date_created")
@@ -78,6 +79,14 @@ public class IndividualInvestorEntity {
 
     public void setAdmin_individual_investor(AdminEntity admin_individual_investor) {
         this.admin_individual_investor = admin_individual_investor;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setName(String name) {

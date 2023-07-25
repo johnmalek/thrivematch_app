@@ -45,9 +45,10 @@ public class IndividualInvestorController {
             @RequestPart("email") String email,
             @RequestPart("desc") String description,
             @RequestPart("industry") String industry,
+            @RequestPart("address") String address,
             @RequestPart("image" ) MultipartFile file, @RequestHeader(name="Authorization") String token){
         SuccessAndMessage response = new SuccessAndMessage();
-        return individualInvestorService.createProfile(principal, name, email, description, industry, file);
+        return individualInvestorService.createProfile(principal, name, email, description, industry, address, file);
     }
 
     // Return the image belonging to a specific individual investor

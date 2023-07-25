@@ -34,6 +34,7 @@ public class IndividualInvestorService {
             @RequestPart("email") String email,
             @RequestPart("desc") String description,
             @RequestPart("industry") String industry,
+            @RequestPart("address") String address,
             @RequestPart("image" ) MultipartFile file){
         SuccessAndMessage response = new SuccessAndMessage();
         String username = principal.getName();
@@ -52,6 +53,7 @@ public class IndividualInvestorService {
         individualInvestor.setEmail(email);
         individualInvestor.setDescription(description);
         individualInvestor.setIndustry(industry);
+        individualInvestor.setAddress(address);
         individualInvestor.setPicturePath(picture);
         individualInvestor.setDateCreated(LocalDate.now());
         individualInvestor.setUser(user);

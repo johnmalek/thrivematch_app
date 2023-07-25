@@ -60,7 +60,12 @@ public class StartUpEntity {
     @PostPersist
     public void updateOwnerHasCreatedStartup() {
         this.createdByAdmin = false; // Assuming this startup is created by the user
+        if(this.user != null){
         user.updateHasCreatedStartup();
+        }
+        if (this.createdByAdmin && this.admin != null) {
+            this.admin.updateHasCreatedStartup();
+        }
     }
 
     public Integer getId() {

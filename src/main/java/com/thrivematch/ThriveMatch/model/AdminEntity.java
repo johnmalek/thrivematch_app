@@ -16,6 +16,10 @@ public class AdminEntity {
     private String username;
     private String password;
 
+    private boolean hasCreatedStartUp;
+    private boolean hasCreatedInvestor;
+    private boolean hasCreatedIndividualInvestor;
+
     @OneToMany(mappedBy = "admin")
     private List<TokenEntity> tokens;
 
@@ -27,6 +31,86 @@ public class AdminEntity {
 
     @OneToMany(mappedBy = "admin_individual_investor")
     private List<IndividualInvestorEntity> individualInvestors;
+
+
+    // Add methods to update the boolean flags
+    public void addStartup() {
+        this.hasCreatedStartUp = true;
+    }
+
+    public void removeStartup() {
+        // Check if any startups are still associated with this user
+        if (this.startups.isEmpty()) {
+            this.hasCreatedStartUp = false;
+        }
+    }
+
+    public void addInvestor() {
+        this.hasCreatedInvestor = true;
+    }
+
+    public void removeInvestor() {
+        // Check if any investors are still associated with this user
+        if (this.investors.isEmpty()) {
+            this.hasCreatedInvestor = false;
+        }
+    }
+
+    public void addIndividualInvestor() {
+        this.hasCreatedIndividualInvestor = true;
+    }
+
+    public void removeIndividualInvestor() {
+        // Check if any individual investors are still associated with this user
+        if (this.individualInvestors.isEmpty()) {
+            this.hasCreatedIndividualInvestor = false;
+        }
+    }
+
+    public boolean isHasCreatedStartup() {
+        return hasCreatedStartUp;
+    }
+
+    public void setHasCreatedStartup(boolean hasCreatedStartup) {
+        this.hasCreatedStartUp = hasCreatedStartup;
+    }
+
+    // Method to update the flag when an admin creates a startup
+    public void updateHasCreatedStartup() {
+        this.hasCreatedStartUp = true;
+    }
+
+    public void updateHasCreatedInvestor() {
+        this.hasCreatedInvestor = true;
+    }
+
+    public void updateHasCreatedIndividual() {
+        this.hasCreatedIndividualInvestor = true;
+    }
+
+    public boolean isHasCreatedStartUp() {
+        return hasCreatedStartUp;
+    }
+
+    public void setHasCreatedStartUp(boolean hasCreatedStartUp) {
+        this.hasCreatedStartUp = hasCreatedStartUp;
+    }
+
+    public boolean isHasCreatedInvestor() {
+        return hasCreatedInvestor;
+    }
+
+    public void setHasCreatedInvestor(boolean hasCreatedInvestor) {
+        this.hasCreatedInvestor = hasCreatedInvestor;
+    }
+
+    public boolean isHasCreatedIndividualInvestor() {
+        return hasCreatedIndividualInvestor;
+    }
+
+    public void setHasCreatedIndividualInvestor(boolean hasCreatedIndividualInvestor) {
+        this.hasCreatedIndividualInvestor = hasCreatedIndividualInvestor;
+    }
 
     public Integer getId() {
         return id;

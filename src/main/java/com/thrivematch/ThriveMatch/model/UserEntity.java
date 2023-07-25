@@ -76,15 +76,15 @@ public class UserEntity {
     }
 
     public void updateHasCreatedStartup() {
-        this.hasCreatedStartUp = startups.stream().anyMatch(startup -> !startup.isCreatedByAdmin());
+        this.hasCreatedStartUp = true;
     }
 
     public void updateHasCreatedInvestor() {
-        this.hasCreatedInvestor = investors.stream().anyMatch(investor -> !investor.isCreatedByAdmin());
+        this.hasCreatedInvestor = true;
     }
 
     public void updateHasCreatedIndividual() {
-        this.hasCreatedIndividualInvestor = individualInvestors.stream().anyMatch(individualInvestor -> !individualInvestor.isCreatedByAdmin());
+        this.hasCreatedIndividualInvestor = true;
     }
 
     public boolean isHasCreatedStartUp() {
