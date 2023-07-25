@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,6 +27,7 @@ public class IndividualInvestorService {
     @Autowired
     private ImageService imageService;
 
+    // Upload Individual Investor Information
     public ResponseEntity<SuccessAndMessage> createProfile(
             Principal principal,
             @RequestPart("name") String name,
@@ -51,6 +53,7 @@ public class IndividualInvestorService {
         individualInvestor.setDescription(description);
         individualInvestor.setIndustry(industry);
         individualInvestor.setPicturePath(picture);
+        individualInvestor.setDateCreated(LocalDate.now());
         individualInvestor.setUser(user);
 
         IndividualInvestorEntity savedIndividualInvestor = individualInvestorRepo.save(individualInvestor);

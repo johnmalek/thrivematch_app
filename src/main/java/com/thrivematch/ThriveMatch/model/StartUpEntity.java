@@ -27,6 +27,8 @@ public class StartUpEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate yearFounded;
     private String picturePath;
+    @Column(name = "date_created")
+    private LocalDate dateCreated;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -45,6 +47,21 @@ public class StartUpEntity {
     @ManyToMany(mappedBy = "startups", fetch = FetchType.LAZY)
     private Set<InvestorEntity> investors;
 
+    private boolean createdByAdmin;
+
+    public boolean isCreatedByAdmin() {
+        return createdByAdmin;
+    }
+
+    public void setCreatedByAdmin(boolean createdByAdmin) {
+        this.createdByAdmin = createdByAdmin;
+    }
+
+    @PostPersist
+    public void updateOwnerHasCreatedStartup() {
+        this.createdByAdmin = false; // Assuming this startup is created by the user
+        user.updateHasCreatedStartup();
+    }
 
     public Integer getId() {
         return id;
@@ -60,6 +77,14 @@ public class StartUpEntity {
 
     public AdminEntity getAdmin() {
         return admin;
+    }
+
+    public LocalDate getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(LocalDate dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public void setAdmin(AdminEntity admin) {

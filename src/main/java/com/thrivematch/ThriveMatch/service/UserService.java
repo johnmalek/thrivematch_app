@@ -2,9 +2,7 @@ package com.thrivematch.ThriveMatch.service;
 
 import com.thrivematch.ThriveMatch.dto.*;
 import com.thrivematch.ThriveMatch.model.*;
-import com.thrivematch.ThriveMatch.repository.AdminRepo;
-import com.thrivematch.ThriveMatch.repository.TokenRepo;
-import com.thrivematch.ThriveMatch.repository.UserRepo;
+import com.thrivematch.ThriveMatch.repository.*;
 import com.thrivematch.ThriveMatch.security.CustomUserDetailsService;
 import com.thrivematch.ThriveMatch.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +34,13 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtGenerator jwtGenerator;
+    @Autowired
+    private StartUpRepo startUpRepo;
+    @Autowired
+    private InvestorRepo investorRepo;
+    @Autowired
+    private IndividualInvestorRepo individualInvestorRepo;
+
 
     public ResponseEntity<String> adminRegister(AdminAuth adminAuthDto) {
         if(adminRepo.existsByUsername(adminAuthDto.getUsername())) {
@@ -111,9 +116,19 @@ public class UserService {
             responseDto.setSuccess(true);
             responseDto.setMessage("login successful !!");
             responseDto.setToken(token);
-            responseDto.setUser(userEntity.getUsername(), userEntity.getEmail(), userEntity.getId());
+            responseDto.setUser(userEntity.getId(), userEntity.getUsername(), userEntity.getEmail(), userEntity.isHasCreatedStartUp(), userEntity.isHasCreatedInvestor(), userEntity.isHasCreatedIndividualInvestor());
             revokeAllUserTokens(userEntity);
             saveUserToken(userEntity, token);
+            // Check if the user has created startups, investors, or individual investors
+            boolean hasCreatedStartup = !userEntity.getStartups().isEmpty();
+            boolean hasCreatedInvestor = !userEntity.getInvestors().isEmpty();
+            boolean hasCreatedIndividual = !userEntity.getIndividualInvestors().isEmpty();
+
+            // Set the corresponding boolean fields in the UserEntity
+            userEntity.setHasCreatedStartUp(hasCreatedStartup);
+            userEntity.setHasCreatedInvestor(hasCreatedInvestor);
+            userEntity.setHasCreatedIndividualInvestor(hasCreatedIndividual);
+            userRepo.save(userEntity);
             return new ResponseEntity<UserLoginResponse>(responseDto, HttpStatus.OK);
         }
         responseDto.setSuccess(false);

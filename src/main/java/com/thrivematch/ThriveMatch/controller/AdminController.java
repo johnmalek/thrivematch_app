@@ -80,6 +80,20 @@ public class AdminController {
         return adminService.allUsers();
     }
 
+    // Return a list of all investors
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/all_investors")
+    public ResponseEntity<AdminInvestorInfoResponse> getAllInvestors(){
+        return adminService.getAllInvestors();
+    }
+
+    // Return a list of all investors
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/all_startups")
+    public ResponseEntity<AdminStartUpInfoResponse> getAllStartups(){
+        return adminService.getAllStartups();
+    }
+
     @PreAuthorize("hasRole('admin')")
     @PostMapping("/add_startup")
     public ResponseEntity<SuccessAndMessage> createStartUp(

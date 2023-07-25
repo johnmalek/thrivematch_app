@@ -2,6 +2,7 @@ package com.thrivematch.ThriveMatch.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
@@ -16,10 +17,32 @@ public class IndividualInvestorEntity {
     private String industry;
     private String email;
     private String picturePath;
+    @Column(name = "date_created")
+    private LocalDate dateCreated;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private AdminEntity admin_individual_investor;
+
+    @PostPersist
+    public void updateOwnerHasCreatedIndividual() {
+        this.createdByAdmin = false; // Assuming this individual investor is created by the user
+        user.updateHasCreatedIndividual();
+    }
+
+    private boolean createdByAdmin;
+
+    public boolean isCreatedByAdmin() {
+        return createdByAdmin;
+    }
+
+    public void setCreatedByAdmin(boolean createdByAdmin) {
+        this.createdByAdmin = createdByAdmin;
+    }
 
     public UserEntity getUser() {
         return user;
@@ -27,6 +50,14 @@ public class IndividualInvestorEntity {
 
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    public LocalDate getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(LocalDate dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public Integer getId() {
@@ -39,6 +70,14 @@ public class IndividualInvestorEntity {
 
     public String getName() {
         return name;
+    }
+
+    public AdminEntity getAdmin_individual_investor() {
+        return admin_individual_investor;
+    }
+
+    public void setAdmin_individual_investor(AdminEntity admin_individual_investor) {
+        this.admin_individual_investor = admin_individual_investor;
     }
 
     public void setName(String name) {

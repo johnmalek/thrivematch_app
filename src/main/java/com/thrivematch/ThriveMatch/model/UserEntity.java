@@ -25,6 +25,10 @@ public class UserEntity {
                     "8-35 characters long")
     private String password;
 
+    private boolean hasCreatedStartUp;
+    private boolean hasCreatedInvestor;
+    private boolean hasCreatedIndividualInvestor;
+
     @OneToMany(mappedBy = "user")
     private List<TokenEntity> tokens;
 
@@ -37,6 +41,76 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<IndividualInvestorEntity> individualInvestors;
 
+    // Add methods to update the boolean flags
+    public void addStartup() {
+        this.hasCreatedStartUp = true;
+    }
+
+    public void removeStartup() {
+        // Check if any startups are still associated with this user
+        if (this.startups.isEmpty()) {
+            this.hasCreatedStartUp = false;
+        }
+    }
+
+    public void addInvestor() {
+        this.hasCreatedInvestor = true;
+    }
+
+    public void removeInvestor() {
+        // Check if any investors are still associated with this user
+        if (this.investors.isEmpty()) {
+            this.hasCreatedInvestor = false;
+        }
+    }
+
+    public void addIndividualInvestor() {
+        this.hasCreatedIndividualInvestor = true;
+    }
+
+    public void removeIndividualInvestor() {
+        // Check if any individual investors are still associated with this user
+        if (this.individualInvestors.isEmpty()) {
+            this.hasCreatedIndividualInvestor = false;
+        }
+    }
+
+    public void updateHasCreatedStartup() {
+        this.hasCreatedStartUp = startups.stream().anyMatch(startup -> !startup.isCreatedByAdmin());
+    }
+
+    public void updateHasCreatedInvestor() {
+        this.hasCreatedInvestor = investors.stream().anyMatch(investor -> !investor.isCreatedByAdmin());
+    }
+
+    public void updateHasCreatedIndividual() {
+        this.hasCreatedIndividualInvestor = individualInvestors.stream().anyMatch(individualInvestor -> !individualInvestor.isCreatedByAdmin());
+    }
+
+    public boolean isHasCreatedStartUp() {
+        return hasCreatedStartUp;
+    }
+
+    public void setHasCreatedStartUp(boolean hasCreatedStartUp) {
+        this.hasCreatedStartUp = hasCreatedStartUp;
+    }
+
+    public boolean isHasCreatedInvestor() {
+        return hasCreatedInvestor;
+    }
+
+    public void setHasCreatedInvestor(boolean hasCreatedInvestor) {
+        this.hasCreatedInvestor = hasCreatedInvestor;
+    }
+
+    public boolean isHasCreatedIndividualInvestor() {
+        return hasCreatedIndividualInvestor;
+    }
+
+    public void setHasCreatedIndividualInvestor(boolean hasCreatedIndividualInvestor) {
+        this.hasCreatedIndividualInvestor = hasCreatedIndividualInvestor;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -48,7 +122,6 @@ public class UserEntity {
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -100,4 +173,5 @@ public class UserEntity {
     public void setIndividualInvestors(List<IndividualInvestorEntity> individualInvestors) {
         this.individualInvestors = individualInvestors;
     }
+
 }

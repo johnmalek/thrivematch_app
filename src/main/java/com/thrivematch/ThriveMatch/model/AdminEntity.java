@@ -25,6 +25,9 @@ public class AdminEntity {
     @OneToMany(mappedBy = "admins")
     private List<InvestorEntity> investors;
 
+    @OneToMany(mappedBy = "admin_individual_investor")
+    private List<IndividualInvestorEntity> individualInvestors;
+
     public Integer getId() {
         return id;
     }
@@ -55,6 +58,14 @@ public class AdminEntity {
 
     public void setTokens(List<TokenEntity> tokens) {
         this.tokens = tokens;
+    }
+
+    public List<IndividualInvestorEntity> getIndividualInvestors() {
+        return individualInvestors;
+    }
+
+    public void setIndividualInvestors(List<IndividualInvestorEntity> individualInvestors) {
+        this.individualInvestors = individualInvestors;
     }
 
     public List<StartUpEntity> getStartups() {

@@ -75,6 +75,7 @@ public class InvestorService {
         investor.setAddress(address);
         investor.setYearFounded(LocalDate.parse(year));
         investor.setPicturePath(picture);
+        investor.setDateCreated(LocalDate.now());
         investor.setUser(user);
 
         InvestorEntity savedStartUp = investorRepo.save(investor);
@@ -112,7 +113,7 @@ public class InvestorService {
             }
             for(IndividualInvestorEntity individualInvestor: individualInvestors){
                 investorDetail = new InvestorDetails();
-                investorDetail.setId(investorDetail.getId());
+                investorDetail.setId(individualInvestor.getId());
                 investorDetail.setName(individualInvestor.getName());
                 investorDetail.setDescription(individualInvestor.getDescription());
                 investorDetail.setIndustry(individualInvestor.getIndustry());

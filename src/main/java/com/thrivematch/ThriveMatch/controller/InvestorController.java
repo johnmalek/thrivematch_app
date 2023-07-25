@@ -5,7 +5,9 @@ import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
 import com.thrivematch.ThriveMatch.model.InvestorEntity;
 import com.thrivematch.ThriveMatch.model.LikesEntity;
 import com.thrivematch.ThriveMatch.model.StartUpEntity;
+import com.thrivematch.ThriveMatch.model.UserEntity;
 import com.thrivematch.ThriveMatch.repository.InvestorRepo;
+import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.service.ImageService;
 import com.thrivematch.ThriveMatch.service.InvestorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +34,8 @@ public class InvestorController {
     private InvestorRepo investorRepo;
     @Autowired
     private InvestorService investorService;
+    @Autowired
+    private UserRepo userRepo;
 
 
     // Upload investor Information
@@ -50,8 +55,8 @@ public class InvestorController {
     }
 
     // Return a list of all investors
-    @PreAuthorize("hasRole('admin') or hasRole('user')")
-    @GetMapping("all_investors")
+    @PreAuthorize("hasRole('user')")
+    @GetMapping("/all_investors")
     public ResponseEntity<InvestorInfoResponse> getAllInvestors(){
         return investorService.getAllInvestors();
     }

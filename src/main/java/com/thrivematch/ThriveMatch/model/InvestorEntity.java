@@ -26,6 +26,8 @@ public class InvestorEntity {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         private LocalDate yearFounded;
         private String picturePath;
+        @Column(name = "date_created")
+        private LocalDate dateCreated;
 
         @OneToMany(mappedBy = "investor")
         private List<LikesEntity> likes;
@@ -49,6 +51,21 @@ public class InvestorEntity {
         )
         private Set<StartUpEntity> startups;
 
+        private boolean createdByAdmin;
+
+        public boolean isCreatedByAdmin() {
+                return createdByAdmin;
+        }
+
+        public void setCreatedByAdmin(boolean createdByAdmin) {
+                this.createdByAdmin = createdByAdmin;
+        }
+
+        @PostPersist
+        public void updateOwnerHasCreatedInvestor() {
+                this.createdByAdmin = false; // Assuming this investor is created by the user
+                user.updateHasCreatedInvestor();
+        }
 
         public Integer getId() {
                 return id;
@@ -68,6 +85,14 @@ public class InvestorEntity {
 
         public void setAdmins(AdminEntity admins) {
                 this.admins = admins;
+        }
+
+        public LocalDate getDateCreated() {
+                return dateCreated;
+        }
+
+        public void setDateCreated(LocalDate dateCreated) {
+                this.dateCreated = dateCreated;
         }
 
         public void setName(String name) {

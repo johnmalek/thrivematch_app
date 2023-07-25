@@ -5,8 +5,10 @@ import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
 import com.thrivematch.ThriveMatch.model.DocumentsEntity;
 import com.thrivematch.ThriveMatch.model.LikesEntity;
 import com.thrivematch.ThriveMatch.model.StartUpEntity;
+import com.thrivematch.ThriveMatch.model.UserEntity;
 import com.thrivematch.ThriveMatch.repository.DocumentsRepo;
 import com.thrivematch.ThriveMatch.repository.StartUpRepo;
+import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.service.DocumentService;
 import com.thrivematch.ThriveMatch.service.ImageService;
 import com.thrivematch.ThriveMatch.service.StartUpService;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +40,8 @@ public class StartUpController {
     private DocumentService documentService;
     @Autowired
     private DocumentsRepo documentsRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     //Upload startup information
     @PreAuthorize("hasRole('user')")

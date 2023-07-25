@@ -44,6 +44,8 @@ public class AdminService {
     private InvestorRepo investorRepo;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private IndividualInvestorRepo individualInvestorRepo;
 
 
     // Register a user
@@ -226,6 +228,70 @@ public class AdminService {
         response.setSuccess(true);
         response.setMessage("investor created successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Return a list of all investors in the db(including individual investors)
+    public ResponseEntity<AdminInvestorInfoResponse> getAllInvestors(){
+        ArrayList<InvestorEntity> investors = new ArrayList<>(investorRepo.findAll());
+        ArrayList<IndividualInvestorEntity> individualInvestors = new ArrayList<>(individualInvestorRepo.findAll());
+        AdminInvestorInfoResponse adminInvestorInfoResponse = new AdminInvestorInfoResponse();
+        ArrayList<AdminInvestorDetails> investorDetails = new ArrayList<>();
+        if(investors.size() > 0){
+            adminInvestorInfoResponse.setSuccess(true);
+            adminInvestorInfoResponse.setMessage("All investors");
+            AdminInvestorDetails investorDetail;
+            for(InvestorEntity investor: investors){
+                investorDetail = new AdminInvestorDetails();
+                investorDetail.setId(investor.getId());
+                investorDetail.setName(investor.getName());
+                investorDetail.setDateCreated(investor.getDateCreated());
+                investorDetail.setAddress(investor.getAddress());
+                investorDetail.setEmail(investor.getEmail());
+                investorDetail.setIndustry(investor.getIndustry());
+                investorDetails.add(investorDetail);
+            }
+            for(IndividualInvestorEntity individualInvestor: individualInvestors){
+                investorDetail = new AdminInvestorDetails();
+                investorDetail.setId(individualInvestor.getId());
+                investorDetail.setName(individualInvestor.getName());
+                investorDetail.setIndustry(individualInvestor.getIndustry());
+                investorDetail.setDateCreated(individualInvestor.getDateCreated());
+                investorDetails.add(investorDetail);
+            }
+
+            adminInvestorInfoResponse.setInvestors(investorDetails);
+            return ResponseEntity.ok().body(adminInvestorInfoResponse);
+        }
+        adminInvestorInfoResponse.setSuccess(false);
+        adminInvestorInfoResponse.setMessage("No investors found");
+        return ResponseEntity.badRequest().body(adminInvestorInfoResponse);
+    }
+
+    // Return a list of all startups
+    public ResponseEntity<AdminStartUpInfoResponse> getAllStartups(){
+        ArrayList<StartUpEntity> startups = new ArrayList<>(startUpRepo.findAll());
+        AdminStartUpInfoResponse startUpInfoResponse = new AdminStartUpInfoResponse();
+        ArrayList<AdminStartUpDetails> adminStartUpDetails = new ArrayList<>();
+        if(startups.size() > 0){
+            startUpInfoResponse.setSuccess(true);
+            startUpInfoResponse.setMessage("All startups");
+            AdminStartUpDetails startUpDetail;
+            for(StartUpEntity startUp: startups){
+                startUpDetail = new AdminStartUpDetails();
+                startUpDetail.setId(startUp.getId());
+                startUpDetail.setName(startUp.getName());
+                startUpDetail.setIndustry(startUp.getIndustry());
+                startUpDetail.setAddress(startUp.getAddress());
+                startUpDetail.setEmail(startUp.getEmail());
+                startUpDetail.setDateCreated(startUp.getDateCreated());
+                adminStartUpDetails.add(startUpDetail);
+            }
+            startUpInfoResponse.setStartups(adminStartUpDetails);
+            return ResponseEntity.ok().body(startUpInfoResponse);
+        }
+        startUpInfoResponse.setSuccess(false);
+        startUpInfoResponse.setMessage("No startups found");
+        return ResponseEntity.badRequest().body(startUpInfoResponse);
     }
 
 }

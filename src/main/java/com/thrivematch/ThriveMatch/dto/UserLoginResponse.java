@@ -1,6 +1,11 @@
 package com.thrivematch.ThriveMatch.dto;
 
+import com.thrivematch.ThriveMatch.model.UserEntity;
+
 class userDetails{
+    private boolean hasCreatedStartUp;
+    private boolean hasCreatedInvestor;
+    private boolean hasCreatedIndividualInvestor;
     private String username;
     private String email;
     private Integer id;
@@ -13,10 +18,37 @@ class userDetails{
         this.username = username;
     }
 
-    public userDetails(String username, String email, Integer id) {
+    public userDetails(boolean hasCreatedStartUp, boolean hasCreatedInvestor, boolean hasCreatedIndividualInvestor, String username, String email, Integer id) {
+        this.hasCreatedStartUp = hasCreatedStartUp;
+        this.hasCreatedInvestor = hasCreatedInvestor;
+        this.hasCreatedIndividualInvestor = hasCreatedIndividualInvestor;
         this.username = username;
         this.email = email;
         this.id = id;
+    }
+
+    public boolean isHasCreatedStartUp() {
+        return hasCreatedStartUp;
+    }
+
+    public void setHasCreatedStartUp(boolean hasCreatedStartUp) {
+        this.hasCreatedStartUp = hasCreatedStartUp;
+    }
+
+    public boolean isHasCreatedInvestor() {
+        return hasCreatedInvestor;
+    }
+
+    public void setHasCreatedInvestor(boolean hasCreatedInvestor) {
+        this.hasCreatedInvestor = hasCreatedInvestor;
+    }
+
+    public boolean isHasCreatedIndividualInvestor() {
+        return hasCreatedIndividualInvestor;
+    }
+
+    public void setHasCreatedIndividualInvestor(boolean hasCreatedIndividualInvestor) {
+        this.hasCreatedIndividualInvestor = hasCreatedIndividualInvestor;
     }
 
     public String getEmail() {
@@ -70,7 +102,11 @@ public class UserLoginResponse {
         return user;
     }
 
-    public void setUser(String username, String email, Integer id) {
-        this.user = new userDetails(username, email, id);
+    public void setUser(userDetails user) {
+        this.user = user;
+    }
+
+    public void setUser(Integer id, String username, String email, boolean hasCreatedStartUp, boolean hasCreatedInvestor, boolean hasCreatedIndividualInvestor) {
+        this.user = new userDetails(hasCreatedStartUp, hasCreatedInvestor, hasCreatedIndividualInvestor, username, email, id);
     }
 }

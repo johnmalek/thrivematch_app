@@ -75,6 +75,7 @@ public class StartUpService {
         startUp.setAddress(address);
         startUp.setYearFounded(LocalDate.parse(year));
         startUp.setPicturePath(picture);
+        startUp.setDateCreated(LocalDate.now());
         startUp.setUser(user);
 
         StartUpEntity savedStartUp = startUpRepo.save(startUp);
