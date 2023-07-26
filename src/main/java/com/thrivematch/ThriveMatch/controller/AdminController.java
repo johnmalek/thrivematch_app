@@ -123,4 +123,29 @@ public class AdminController {
             @RequestPart("image") MultipartFile file, @RequestHeader(name = "Authorization") String token) {
         return adminService.createInvestor(principal, name, email, description, industry, address, poBox, year, file);
     }
+
+    @PreAuthorize(("hasRole('admin')"))
+    @PutMapping("/update_startup/{startupId}")
+    public ResponseEntity<SuccessAndMessage> UpdateStartup(@RequestHeader(name = "Authorization") String token, AdminUpdateStartUp updateStartUp, @PathVariable Integer startupId){
+        return adminService.UpdateStartUp(startupId, updateStartUp);
+    }
+
+    @PreAuthorize(("hasRole('admin')"))
+    @PutMapping("/update_investor/{investorId}")
+    public ResponseEntity<SuccessAndMessage> UpdateInvestor(@RequestHeader(name = "Authorization") String token, AdminUpdateStartUp updateStartUp, @PathVariable Integer investorId){
+        return adminService.UpdateInvestor(investorId, updateStartUp);
+    }
+
+    @PreAuthorize(("hasRole('admin')"))
+    @DeleteMapping("/delete_startup/{startUpId}")
+    public ResponseEntity<SuccessAndMessage> deleteOneStartUp(@PathVariable Integer startUpId){
+        return adminService.deleteOneStartUp(startUpId);
+    }
+
+    @PreAuthorize(("hasRole('admin')"))
+    @DeleteMapping("/delete_investor/{investorId}")
+    public ResponseEntity<SuccessAndMessage> deleteOneInvestor(@PathVariable Integer investorId){
+        return adminService.deleteOneInvestor(investorId);
+    }
+
 }

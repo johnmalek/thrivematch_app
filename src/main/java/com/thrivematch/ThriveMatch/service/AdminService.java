@@ -301,4 +301,92 @@ public class AdminService {
         return ResponseEntity.badRequest().body(startUpInfoResponse);
     }
 
+    // Update StartUp Info
+    public ResponseEntity<SuccessAndMessage> UpdateStartUp(Integer startUpId, AdminUpdateStartUp updateStartUp){
+        Optional<StartUpEntity> startUp = startUpRepo.findById(startUpId);
+        SuccessAndMessage response = new SuccessAndMessage();
+        if(startUp.isEmpty()){
+            response.setSuccess(false);
+            response.setMessage("Startup does not exist");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        String image = imageService.uploadFile(updateStartUp.getFile());
+        StartUpEntity startup = startUp.get();
+        startup.setName(updateStartUp.getName());
+        startup.setDescription(updateStartUp.getDescription());
+        startup.setEmail(updateStartUp.getEmail());
+        startup.setIndustry(updateStartUp.getIndustry());
+        startup.setAddress(updateStartUp.getAddress());
+        startup.setPoBox(updateStartUp.getPoBox());
+        startup.setPicturePath(image);
+
+        startUpRepo.save(startup);
+        response.setSuccess(true);
+        response.setMessage("Startup update successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Update Investor Info
+    public ResponseEntity<SuccessAndMessage> UpdateInvestor(Integer investorId, AdminUpdateStartUp updateStartUp){
+        Optional<InvestorEntity> investor = investorRepo.findById(investorId);
+        SuccessAndMessage response = new SuccessAndMessage();
+        if(investor.isEmpty()){
+            response.setSuccess(false);
+            response.setMessage("Investor does not exist");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        String image = imageService.uploadFile(updateStartUp.getFile());
+        InvestorEntity investor1 = investor.get();
+        investor1.setName(updateStartUp.getName());
+        investor1.setDescription(updateStartUp.getDescription());
+        investor1.setEmail(updateStartUp.getEmail());
+        investor1.setIndustry(updateStartUp.getIndustry());
+        investor1.setAddress(updateStartUp.getAddress());
+        investor1.setPoBox(updateStartUp.getPoBox());
+        investor1.setPicturePath(image);
+
+        investorRepo.save(investor1);
+        response.setSuccess(true);
+        response.setMessage("Investor update successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    //Delete one startup
+    public ResponseEntity<SuccessAndMessage> deleteOneStartUp(Integer startUpId){
+        SuccessAndMessage response = new SuccessAndMessage();
+        if (startUpId == null) {
+            response.setSuccess(false);
+            response.setMessage("Startup ID must not be null");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        if(!(startUpRepo.existsById(startUpId))){
+            response.setSuccess(false);
+            response.setMessage("StartUp does not exist");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        startUpRepo.deleteById(startUpId);
+        response.setSuccess(true);
+        response.setMessage("StartUp deleted Successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    //Delete one Investor
+    public ResponseEntity<SuccessAndMessage> deleteOneInvestor(Integer investorId){
+        SuccessAndMessage response = new SuccessAndMessage();
+        if (investorId == null) {
+            response.setSuccess(false);
+            response.setMessage("Investor ID must not be null");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        if(!(investorRepo.existsById(investorId))){
+            response.setSuccess(false);
+            response.setMessage("Investor does not exist");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        startUpRepo.deleteById(investorId);
+        response.setSuccess(true);
+        response.setMessage("Investor deleted Successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

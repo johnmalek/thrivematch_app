@@ -1,5 +1,6 @@
 package com.thrivematch.ThriveMatch.controller;
 
+import com.thrivematch.ThriveMatch.dto.AllStartUpsInformationResponse;
 import com.thrivematch.ThriveMatch.dto.StartUpInfoResponse;
 import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
 import com.thrivematch.ThriveMatch.model.DocumentsEntity;
@@ -64,6 +65,12 @@ public class StartUpController {
     @GetMapping("/all_startups")
     public ResponseEntity<StartUpInfoResponse> getAllStartUps(@RequestHeader(name = "Authorization") String token) {
         return startUpService.getAllStartups();
+    }
+
+    @PreAuthorize("hasRole('user') or hasRole('admin')")
+    @GetMapping("/all_startup_info")
+    public ResponseEntity<AllStartUpsInformationResponse> getAllInfoStartups(@RequestHeader(name = "Authorization") String token){
+        return startUpService.getAllInfoStartups();
     }
 
     // Return the image belonging to a specific startup

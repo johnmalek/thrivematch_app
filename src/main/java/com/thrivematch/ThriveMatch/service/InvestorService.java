@@ -129,6 +129,58 @@ public class InvestorService {
         return ResponseEntity.badRequest().body(investorInfoResponse);
     }
 
+
+    // Return a list of all info about investors in the db(including individual investors)
+    public ResponseEntity<AllInvestorsInformationResponse> getAllInfoInvestors(){
+        ArrayList<InvestorEntity> investors = new ArrayList<>(investorRepo.findAll());
+        ArrayList<IndividualInvestorEntity> individualInvestors = new ArrayList<>(individualInvestorRepo.findAll());
+        AllInvestorsInformationResponse investorInfoResponse = new AllInvestorsInformationResponse();
+        ArrayList<AllInvestorDetails> investorDetails = new ArrayList<>();
+        if(investors.size() > 0){
+            investorInfoResponse.setSuccess(true);
+            investorInfoResponse.setMessage("All investors");
+            AllInvestorDetails investorDetail;
+            for(InvestorEntity investor: investors){
+                investorDetail = new AllInvestorDetails();
+                investorDetail.setId(investor.getId());
+                investorDetail.setName(investor.getName());
+                investorDetail.setAdmin_id(investor.getAdmins() != null ? investor.getAdmins().getId() : null);
+                investorDetail.setUser_id(investor.getUser() != null ? investor.getUser().getId() : null);
+                investorDetail.setEmail(investor.getEmail());
+                investorDetail.setAddress(investor.getAddress());
+                investorDetail.setDateCreated(investor.getDateCreated());
+                investorDetail.setPoBox(investor.getPoBox());
+                investorDetail.setYearFounded(investor.getYearFounded());
+                investorDetail.setIndustry(investor.getIndustry());
+                investorDetail.setDescription(investor.getDescription());
+                investorDetail.setPicturePath(investor.getPicturePath());
+                investorDetails.add(investorDetail);
+            }
+            for(IndividualInvestorEntity individualInvestor: individualInvestors){
+                investorDetail = new AllInvestorDetails();
+                investorDetail.setId(individualInvestor.getId());
+                investorDetail.setName(individualInvestor.getName());
+                investorDetail.setUser_id(individualInvestor.getUser() != null ? individualInvestor.getUser().getId() : null);
+                investorDetail.setEmail(individualInvestor.getEmail());
+                investorDetail.setAddress(individualInvestor.getAddress());
+                investorDetail.setDateCreated(individualInvestor.getDateCreated());
+                investorDetail.setYearFounded(investorDetail.getYearFounded());
+                investorDetail.setDescription(individualInvestor.getDescription());
+                investorDetail.setIndustry(individualInvestor.getIndustry());
+                investorDetail.setPicturePath(individualInvestor.getPicturePath());
+                investorDetails.add(investorDetail);
+            }
+
+            investorInfoResponse.setInvestorDetailsList(investorDetails);
+            return ResponseEntity.ok().body(investorInfoResponse);
+        }
+        investorInfoResponse.setSuccess(false);
+        investorInfoResponse.setMessage("No investors found");
+        return ResponseEntity.badRequest().body(investorInfoResponse);
+    }
+
+
+
     //Return a list of investors that have liked the startup
     public ResponseEntity<List<LikesDTO>> likes(@PathVariable Integer investorId){
         Optional<InvestorEntity> investor = investorRepo.findById(investorId);

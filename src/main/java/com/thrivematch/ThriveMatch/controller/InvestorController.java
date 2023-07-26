@@ -1,5 +1,6 @@
 package com.thrivematch.ThriveMatch.controller;
 
+import com.thrivematch.ThriveMatch.dto.AllInvestorsInformationResponse;
 import com.thrivematch.ThriveMatch.dto.InvestorInfoResponse;
 import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
 import com.thrivematch.ThriveMatch.model.InvestorEntity;
@@ -59,6 +60,13 @@ public class InvestorController {
     @GetMapping("/all_investors")
     public ResponseEntity<InvestorInfoResponse> getAllInvestors(){
         return investorService.getAllInvestors();
+    }
+
+    // Return a list of all info investors have
+    @PreAuthorize("hasRole('user')")
+    @GetMapping("/all_investor_info")
+    public ResponseEntity<AllInvestorsInformationResponse> getAllInfoInvestors(){
+        return investorService.getAllInfoInvestors();
     }
 
     // Return the image belonging to a specific investor

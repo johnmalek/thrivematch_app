@@ -117,6 +117,40 @@ public class StartUpService {
         return ResponseEntity.badRequest().body(startUpInfoResponse);
     }
 
+    // Return all information about a startup
+    public ResponseEntity<AllStartUpsInformationResponse> getAllInfoStartups(){
+        ArrayList<StartUpEntity> startups = new ArrayList<>(startUpRepo.findAll());
+        AllStartUpsInformationResponse startUpInfoResponse = new AllStartUpsInformationResponse();
+        ArrayList<AllStartUpDetails> startUpDetails = new ArrayList<>();
+        if(startups.size() > 0){
+            startUpInfoResponse.setSuccess(true);
+            startUpInfoResponse.setMessage("All startups");
+            AllStartUpDetails startUpDetail;
+            for(StartUpEntity startUp: startups){
+                startUpDetail = new AllStartUpDetails();
+                startUpDetail.setId(startUp.getId());
+                startUpDetail.setName(startUp.getName());
+                startUpDetail.setIndustry(startUp.getIndustry());
+                startUpDetail.setAdmin_id(startUp.getAdmin() != null ? startUp.getAdmin().getId() : null);
+                startUpDetail.setUser_id(startUp.getUser() != null ? startUp.getUser().getId() : null);
+                startUpDetail.setAddress(startUp.getAddress());
+                startUpDetail.setEmail(startUp.getEmail());
+                startUpDetail.setYearFounded(startUp.getYearFounded());
+                startUpDetail.setPoBox(startUp.getPoBox());
+                startUpDetail.setDateCreated(startUp.getDateCreated());
+                startUpDetail.setDescription(startUp.getDescription());
+                startUpDetail.setPicturePath(startUp.getPicturePath());
+                startUpDetails.add(startUpDetail);
+            }
+            startUpInfoResponse.setStartUpDetailsList(startUpDetails);
+            return ResponseEntity.ok().body(startUpInfoResponse);
+        }
+        startUpInfoResponse.setSuccess(false);
+        startUpInfoResponse.setMessage("No startups found");
+        return ResponseEntity.badRequest().body(startUpInfoResponse);
+    }
+
+
     // Upload StartUp Docs
     public ResponseEntity<SuccessAndMessage> uploadDocs(@PathVariable Integer startupId, @RequestPart("file") MultipartFile file) throws IOException {
         SuccessAndMessage response = new SuccessAndMessage();
