@@ -383,7 +383,7 @@ public class AdminService {
             response.setMessage("Investor does not exist");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        startUpRepo.deleteById(investorId);
+        investorRepo.deleteById(investorId);
         response.setSuccess(true);
         response.setMessage("Investor deleted Successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
