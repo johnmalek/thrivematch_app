@@ -2,11 +2,7 @@ package com.thrivematch.ThriveMatch.controller;
 
 import com.thrivematch.ThriveMatch.dto.AllStartUpsInformationResponse;
 import com.thrivematch.ThriveMatch.dto.StartUpInfoResponse;
-import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
-import com.thrivematch.ThriveMatch.model.DocumentsEntity;
-import com.thrivematch.ThriveMatch.model.LikesEntity;
-import com.thrivematch.ThriveMatch.model.StartUpEntity;
-import com.thrivematch.ThriveMatch.model.UserEntity;
+import com.thrivematch.ThriveMatch.dto.Response;
 import com.thrivematch.ThriveMatch.repository.DocumentsRepo;
 import com.thrivematch.ThriveMatch.repository.StartUpRepo;
 import com.thrivematch.ThriveMatch.repository.UserRepo;
@@ -18,14 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 import java.security.Principal;
 
 @RestController
@@ -47,7 +39,7 @@ public class StartUpController {
     //Upload startup information
     @PreAuthorize("hasRole('user')")
     @PostMapping("/add_startup")
-    public ResponseEntity<SuccessAndMessage> createStartUp(
+    public ResponseEntity<Response> createStartUp(
             Principal principal,
             @RequestPart("name") String name,
             @RequestPart("email") String email,
@@ -85,7 +77,7 @@ public class StartUpController {
 
     //Have a specific startup upload a file
     @PostMapping("/startup/{startupId}/uploadDoc")
-    public ResponseEntity<SuccessAndMessage> uploadDocs(@PathVariable Integer startupId, @RequestPart("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Response> uploadDocs(@PathVariable Integer startupId, @RequestPart("file") MultipartFile file) throws IOException {
         return startUpService.uploadDocs(startupId, file);
     }
 
@@ -105,14 +97,14 @@ public class StartUpController {
     // Startup delete one file
     @PreAuthorize("hasRole('admin') or hasRole('user')")
     @DeleteMapping("/startup/{startupId}/deleteOneFile/{fileId}")
-    public ResponseEntity<SuccessAndMessage> deleteOneFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
+    public ResponseEntity<Response> deleteOneFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
         return startUpService.deleteOneFile(startupId, fileId);
     }
 
     // Startup delete all files
     @PreAuthorize("hasRole('admin') or hasRole('user')")
     @DeleteMapping("/startup/{startupId}/deleteAllFiles")
-    public ResponseEntity<SuccessAndMessage> deleteAllFiles(@PathVariable Integer startupId) throws IOException{
+    public ResponseEntity<Response> deleteAllFiles(@PathVariable Integer startupId) throws IOException{
         return startUpService.deleteAllFiles(startupId);
     }
 

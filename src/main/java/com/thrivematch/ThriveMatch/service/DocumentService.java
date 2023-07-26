@@ -2,22 +2,15 @@ package com.thrivematch.ThriveMatch.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
-import com.thrivematch.ThriveMatch.model.DocumentsEntity;
-import com.thrivematch.ThriveMatch.model.StartUpEntity;
 import com.thrivematch.ThriveMatch.repository.DocumentsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class DocumentService {

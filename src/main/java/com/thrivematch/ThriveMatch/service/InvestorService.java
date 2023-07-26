@@ -11,18 +11,12 @@ import com.thrivematch.ThriveMatch.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,7 +37,7 @@ public class InvestorService {
 
 
     // Upload investor Information
-    public ResponseEntity<SuccessAndMessage> createInvestor(
+    public ResponseEntity<Response> createInvestor(
             Principal principal,
             @RequestPart("name") String name,
             @RequestPart("email") String email,
@@ -53,7 +47,7 @@ public class InvestorService {
             @RequestPart("poBox") String poBox,
             @RequestPart("year") String year,
             @RequestPart("image" ) MultipartFile file){
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
 
         String username = principal.getName();
 

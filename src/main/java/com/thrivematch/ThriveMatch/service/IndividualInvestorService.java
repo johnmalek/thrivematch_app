@@ -1,6 +1,6 @@
 package com.thrivematch.ThriveMatch.service;
 
-import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
+import com.thrivematch.ThriveMatch.dto.Response;
 import com.thrivematch.ThriveMatch.model.IndividualInvestorEntity;
 import com.thrivematch.ThriveMatch.model.UserEntity;
 import com.thrivematch.ThriveMatch.repository.IndividualInvestorRepo;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +27,7 @@ public class IndividualInvestorService {
     private ImageService imageService;
 
     // Upload Individual Investor Information
-    public ResponseEntity<SuccessAndMessage> createProfile(
+    public ResponseEntity<Response> createProfile(
             Principal principal,
             @RequestPart("name") String name,
             @RequestPart("email") String email,
@@ -36,7 +35,7 @@ public class IndividualInvestorService {
             @RequestPart("industry") String industry,
             @RequestPart("address") String address,
             @RequestPart("image" ) MultipartFile file){
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
         String username = principal.getName();
 
         UserEntity user = userRepo.findByEmail(username)

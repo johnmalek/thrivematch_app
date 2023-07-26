@@ -1,8 +1,7 @@
 package com.thrivematch.ThriveMatch.controller;
 
-import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
+import com.thrivematch.ThriveMatch.dto.Response;
 import com.thrivematch.ThriveMatch.model.InvestorEntity;
-import com.thrivematch.ThriveMatch.model.LikesEntity;
 import com.thrivematch.ThriveMatch.model.StartUpEntity;
 import com.thrivematch.ThriveMatch.repository.InvestorRepo;
 import com.thrivematch.ThriveMatch.repository.LikesRepo;
@@ -29,10 +28,10 @@ public class LikesController {
 
     // Investor like startup
     @PostMapping("/investors/{investorId}/startup/{startupId}/like")
-    public ResponseEntity<SuccessAndMessage> likeStartUp(@PathVariable Integer investorId, @PathVariable Integer startupId){
+    public ResponseEntity<Response> likeStartUp(@PathVariable Integer investorId, @PathVariable Integer startupId){
         Optional<InvestorEntity> investor = investorRepo.findById(investorId);
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
 
         if(investor.isEmpty()){
             response.setSuccess(false);
@@ -55,10 +54,10 @@ public class LikesController {
 
     // Investor unlike startup
     @DeleteMapping("/investors/{investorId}/startup/{startupId}/unlike")
-    public ResponseEntity<SuccessAndMessage> unLikeStartUp(@PathVariable Integer investorId, @PathVariable Integer startupId){
+    public ResponseEntity<Response> unLikeStartUp(@PathVariable Integer investorId, @PathVariable Integer startupId){
         Optional<InvestorEntity> investor = investorRepo.findById(investorId);
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
 
         if(investor.isEmpty()){
             response.setSuccess(false);
@@ -76,10 +75,10 @@ public class LikesController {
 
     // Startup like an investor
     @PostMapping("/startups/{startupId}/investors/{investorId}/like")
-    public ResponseEntity<SuccessAndMessage> likeInvestor(@PathVariable Integer investorId, @PathVariable Integer startupId){
+    public ResponseEntity<Response> likeInvestor(@PathVariable Integer investorId, @PathVariable Integer startupId){
         Optional<InvestorEntity> investor = investorRepo.findById(investorId);
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
 
         if(investor.isEmpty()){
             response.setSuccess(false);
@@ -102,10 +101,10 @@ public class LikesController {
 
     // Startup unlike an investor
     @DeleteMapping("/startups/{startupId}/investors/{investorId}/unlike")
-    public ResponseEntity<SuccessAndMessage> unLikeInvestor(@PathVariable Integer investorId, @PathVariable Integer startupId){
+    public ResponseEntity<Response> unLikeInvestor(@PathVariable Integer investorId, @PathVariable Integer startupId){
         Optional<InvestorEntity> investor = investorRepo.findById(investorId);
         Optional<StartUpEntity> startUp = startUpRepo.findById(startupId);
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
 
         if(investor.isEmpty()){
             response.setSuccess(false);

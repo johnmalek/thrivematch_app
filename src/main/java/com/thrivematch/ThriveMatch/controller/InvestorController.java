@@ -2,11 +2,7 @@ package com.thrivematch.ThriveMatch.controller;
 
 import com.thrivematch.ThriveMatch.dto.AllInvestorsInformationResponse;
 import com.thrivematch.ThriveMatch.dto.InvestorInfoResponse;
-import com.thrivematch.ThriveMatch.dto.SuccessAndMessage;
-import com.thrivematch.ThriveMatch.model.InvestorEntity;
-import com.thrivematch.ThriveMatch.model.LikesEntity;
-import com.thrivematch.ThriveMatch.model.StartUpEntity;
-import com.thrivematch.ThriveMatch.model.UserEntity;
+import com.thrivematch.ThriveMatch.dto.Response;
 import com.thrivematch.ThriveMatch.repository.InvestorRepo;
 import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.service.ImageService;
@@ -16,15 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -42,7 +34,7 @@ public class InvestorController {
     // Upload investor Information
     @PreAuthorize("hasRole('admin') or hasRole('user')")
     @PostMapping("/add_investor")
-    public ResponseEntity<SuccessAndMessage> createInvestor(
+    public ResponseEntity<Response> createInvestor(
             Principal principal,
             @RequestPart("name") String name,
             @RequestPart("email") String email,

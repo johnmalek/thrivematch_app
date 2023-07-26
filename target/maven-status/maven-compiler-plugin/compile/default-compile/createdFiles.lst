@@ -21,7 +21,6 @@ com/thrivematch/ThriveMatch/model/DocumentsEntity.class
 com/thrivematch/ThriveMatch/service/LikeService.class
 com/thrivematch/ThriveMatch/controller/StartUpController.class
 com/thrivematch/ThriveMatch/security/JwtGenerator.class
-com/thrivematch/ThriveMatch/dto/SuccessAndMessage.class
 com/thrivematch/ThriveMatch/repository/AdminRepo.class
 com/thrivematch/ThriveMatch/repository/UserRepo.class
 com/thrivematch/ThriveMatch/service/LogOutService.class
@@ -47,6 +46,7 @@ com/thrivematch/ThriveMatch/dto/AdminDetails.class
 com/thrivematch/ThriveMatch/service/DocumentService.class
 com/thrivematch/ThriveMatch/security/CustomUserDetailsService.class
 com/thrivematch/ThriveMatch/controller/InvestorController.class
+com/thrivematch/ThriveMatch/dto/Response.class
 com/thrivematch/ThriveMatch/service/InvestorService.class
 com/thrivematch/ThriveMatch/dto/userDetails.class
 com/thrivematch/ThriveMatch/service/AdminService.class

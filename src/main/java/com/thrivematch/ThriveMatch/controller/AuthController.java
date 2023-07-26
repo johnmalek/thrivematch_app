@@ -1,34 +1,21 @@
 package com.thrivematch.ThriveMatch.controller;
 
 import com.thrivematch.ThriveMatch.dto.*;
-import com.thrivematch.ThriveMatch.model.AdminEntity;
-import com.thrivematch.ThriveMatch.model.UserEntity;
-import com.thrivematch.ThriveMatch.model.UserType;
 import com.thrivematch.ThriveMatch.repository.AdminRepo;
 import com.thrivematch.ThriveMatch.repository.UserRepo;
 import com.thrivematch.ThriveMatch.security.CustomUserDetailsService;
 import com.thrivematch.ThriveMatch.security.JwtGenerator;
 //import com.thrivematch.ThriveMatch.service.LogOutService;
 import com.thrivematch.ThriveMatch.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -64,7 +51,7 @@ public class AuthController {
 
     @PreAuthorize("hasRole('user')")
     @PostMapping("api/v1/userRegister")
-    public ResponseEntity<SuccessAndMessage> userRegister(@Valid @RequestBody UserRegister userRegisterDto) {
+    public ResponseEntity<Response> userRegister(@Valid @RequestBody UserRegister userRegisterDto) {
         System.out.println("userRegister");
         return userService.userRegister(userRegisterDto);
     }
@@ -78,7 +65,7 @@ public class AuthController {
 
     @PreAuthorize("hasRole('user')")
     @PutMapping("api/v1/updateUser/{id}")
-    public ResponseEntity<SuccessAndMessage> updateUser(@PathVariable Integer id, @RequestBody UserUpdate userUpdateDto, @RequestHeader(name="Authorization") String token) {
+    public ResponseEntity<Response> updateUser(@PathVariable Integer id, @RequestBody UserUpdate userUpdateDto, @RequestHeader(name="Authorization") String token) {
         System.out.println("userUpdate");
         return userService.updateUser(id, userUpdateDto);
     }

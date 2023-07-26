@@ -82,13 +82,13 @@ public class UserService {
         return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
     }
 
-    public ResponseEntity<SuccessAndMessage> userRegister(UserRegister userRegisterDto) {
+    public ResponseEntity<Response> userRegister(UserRegister userRegisterDto) {
         System.out.println("userRegister");
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
         if(userRepo.existsByEmail(userRegisterDto.getEmail())) {
             response.setMessage("Email is already registered !!");
             response.setSuccess(false);
-            return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
         }
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(userRegisterDto.getUsername());
@@ -97,7 +97,7 @@ public class UserService {
         userRepo.save(userEntity);
         response.setMessage("User Created Successfully !!");
         response.setSuccess(true);
-        return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
+        return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
     public ResponseEntity<UserLoginResponse> userLogin(UserLogin userLoginDto) {
@@ -138,13 +138,13 @@ public class UserService {
 
     }
 
-    public ResponseEntity<SuccessAndMessage> updateUser(Integer id, UserUpdate userUpdateDto) {
+    public ResponseEntity<Response> updateUser(Integer id, UserUpdate userUpdateDto) {
         System.out.println("userUpdate");
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
         if(!(userRepo.existsById(id))) {
             response.setMessage("User does not exist");
             response.setSuccess(false);
-            return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
         }
         Optional<UserEntity> user = userRepo.findById(id);
         UserEntity userEntity = user.get();
@@ -154,7 +154,7 @@ public class UserService {
         userRepo.save(userEntity);
         response.setMessage("User updated successfully");
         response.setSuccess(true);
-        return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
+        return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
 

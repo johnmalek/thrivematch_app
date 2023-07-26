@@ -12,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,12 +48,12 @@ public class AdminService {
 
 
     // Register a user
-    public ResponseEntity<SuccessAndMessage> registerUser(UserRegister userRegisterDto) {
-        SuccessAndMessage response = new SuccessAndMessage();
+    public ResponseEntity<Response> registerUser(UserRegister userRegisterDto) {
+        Response response = new Response();
         if(userRepo.existsByEmail(userRegisterDto.getEmail())) {
             response.setMessage("Email is already registered !!");
             response.setSuccess(false);
-            return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
         }
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(userRegisterDto.getUsername());
@@ -63,16 +62,16 @@ public class AdminService {
         userRepo.save(userEntity);
         response.setMessage("User Created Successfully !!");
         response.setSuccess(true);
-        return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
+        return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<SuccessAndMessage> updateUser(Integer id, UserUpdate userUpdateDto) {
+    public ResponseEntity<Response> updateUser(Integer id, UserUpdate userUpdateDto) {
         System.out.println("userUpdate");
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
         if(!(userRepo.existsById(id))) {
             response.setMessage("User does not exist");
             response.setSuccess(false);
-            return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
         }
         Optional<UserEntity> user = userRepo.findById(id);
         UserEntity userEntity = user.get();
@@ -82,31 +81,31 @@ public class AdminService {
         userRepo.save(userEntity);
         response.setMessage("User updated successfully");
         response.setSuccess(true);
-        return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
+        return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
     // Delete a user
-    public ResponseEntity<SuccessAndMessage> deleteUser(Integer id) {
-        SuccessAndMessage response = new SuccessAndMessage();
+    public ResponseEntity<Response> deleteUser(Integer id) {
+        Response response = new Response();
         if(!(userRepo.existsById(id))) {
             response.setMessage("User does not exist");
             response.setSuccess(false);
-            return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
         }
         userRepo.deleteById(id);
         response.setMessage("User deleted successfully");
         response.setSuccess(true);
-        return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
+        return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
     // Delete all users
-    public ResponseEntity<SuccessAndMessage> deleteAllUsers() {
+    public ResponseEntity<Response> deleteAllUsers() {
         System.out.println("deleteAllUsers");
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
         userRepo.deleteAll();
         response.setMessage("Users deleted successfully");
         response.setSuccess(true);
-        return new ResponseEntity<SuccessAndMessage>(response, HttpStatus.OK);
+        return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
     // List all users
@@ -134,7 +133,7 @@ public class AdminService {
     }
 
 //     Upload StartUp Information
-    public ResponseEntity<SuccessAndMessage> createStartUp(
+    public ResponseEntity<Response> createStartUp(
             Principal principal,
             @RequestPart("name") String name,
             @RequestPart("email") String email,
@@ -144,7 +143,7 @@ public class AdminService {
             @RequestPart("poBox") String poBox,
             @RequestPart("year") String year,
             @RequestPart("image" ) MultipartFile file) {
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
 
         String username = principal.getName();
 
@@ -186,7 +185,7 @@ public class AdminService {
     }
 
 //   Upload investor Information
-    public ResponseEntity<SuccessAndMessage> createInvestor(
+    public ResponseEntity<Response> createInvestor(
             Principal principal,
             @RequestPart("name") String name,
             @RequestPart("email") String email,
@@ -196,7 +195,7 @@ public class AdminService {
             @RequestPart("poBox") String poBox,
             @RequestPart("year") String year,
             @RequestPart("image" ) MultipartFile file){
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
 
         String username = principal.getName();
 
@@ -289,6 +288,7 @@ public class AdminService {
                 startUpDetail.setName(startUp.getName());
                 startUpDetail.setIndustry(startUp.getIndustry());
                 startUpDetail.setAddress(startUp.getAddress());
+                startUpDetail.setLocation(startUp.getAddress());
                 startUpDetail.setEmail(startUp.getEmail());
                 startUpDetail.setDateCreated(startUp.getDateCreated());
                 adminStartUpDetails.add(startUpDetail);
@@ -302,9 +302,9 @@ public class AdminService {
     }
 
     // Update StartUp Info
-    public ResponseEntity<SuccessAndMessage> UpdateStartUp(Integer startUpId, AdminUpdateStartUp updateStartUp){
+    public ResponseEntity<Response> UpdateStartUp(Integer startUpId, AdminUpdateStartUp updateStartUp){
         Optional<StartUpEntity> startUp = startUpRepo.findById(startUpId);
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
         if(startUp.isEmpty()){
             response.setSuccess(false);
             response.setMessage("Startup does not exist");
@@ -327,9 +327,9 @@ public class AdminService {
     }
 
     // Update Investor Info
-    public ResponseEntity<SuccessAndMessage> UpdateInvestor(Integer investorId, AdminUpdateStartUp updateStartUp){
+    public ResponseEntity<Response> UpdateInvestor(Integer investorId, AdminUpdateStartUp updateStartUp){
         Optional<InvestorEntity> investor = investorRepo.findById(investorId);
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
         if(investor.isEmpty()){
             response.setSuccess(false);
             response.setMessage("Investor does not exist");
@@ -352,8 +352,8 @@ public class AdminService {
     }
 
     //Delete one startup
-    public ResponseEntity<SuccessAndMessage> deleteOneStartUp(Integer startUpId){
-        SuccessAndMessage response = new SuccessAndMessage();
+    public ResponseEntity<Response> deleteOneStartUp(Integer startUpId){
+        Response response = new Response();
         if (startUpId == null) {
             response.setSuccess(false);
             response.setMessage("Startup ID must not be null");
@@ -371,8 +371,8 @@ public class AdminService {
     }
 
     //Delete one Investor
-    public ResponseEntity<SuccessAndMessage> deleteOneInvestor(Integer investorId){
-        SuccessAndMessage response = new SuccessAndMessage();
+    public ResponseEntity<Response> deleteOneInvestor(Integer investorId){
+        Response response = new Response();
         if (investorId == null) {
             response.setSuccess(false);
             response.setMessage("Investor ID must not be null");

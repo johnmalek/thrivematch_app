@@ -10,11 +10,7 @@ import com.thrivematch.ThriveMatch.repository.StartUpRepo;
 import com.thrivematch.ThriveMatch.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +38,7 @@ public class StartUpService {
     private UserRepo userRepo;
 
     // Upload StartUp Information
-    public ResponseEntity<SuccessAndMessage> createStartUp(
+    public ResponseEntity<Response> createStartUp(
             Principal principal,
             @RequestPart("name") String name,
             @RequestPart("email") String email,
@@ -52,7 +48,7 @@ public class StartUpService {
             @RequestPart("poBox") String poBox,
             @RequestPart("year") String year,
             @RequestPart("image" ) MultipartFile file) {
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
 
         String username = principal.getName();
 
@@ -152,8 +148,8 @@ public class StartUpService {
 
 
     // Upload StartUp Docs
-    public ResponseEntity<SuccessAndMessage> uploadDocs(@PathVariable Integer startupId, @RequestPart("file") MultipartFile file) throws IOException {
-        SuccessAndMessage response = new SuccessAndMessage();
+    public ResponseEntity<Response> uploadDocs(@PathVariable Integer startupId, @RequestPart("file") MultipartFile file) throws IOException {
+        Response response = new Response();
         StartUpEntity startup = startUpRepo.findById(startupId).orElseThrow();
 //        if (documentsRepo.existsByFilePath(file.getOriginalFilename())) {
 //            response.setSuccess(false);
@@ -225,9 +221,9 @@ public class StartUpService {
     }
 
     // Startup delete one file
-    public ResponseEntity<SuccessAndMessage> deleteOneFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
+    public ResponseEntity<Response> deleteOneFile(@PathVariable Integer startupId, @PathVariable Integer fileId) throws IOException{
         StartUpEntity startup = startUpRepo.findById(startupId).orElse(null);
-        SuccessAndMessage response = new SuccessAndMessage();
+        Response response = new Response();
         // Handle startup not found error
         if (startup == null) {
             response.setSuccess(false);
@@ -249,8 +245,8 @@ public class StartUpService {
     }
 
     // Startup delete all files
-    public ResponseEntity<SuccessAndMessage> deleteAllFiles(@PathVariable Integer startupId) throws IOException{
-        SuccessAndMessage response = new SuccessAndMessage();
+    public ResponseEntity<Response> deleteAllFiles(@PathVariable Integer startupId) throws IOException{
+        Response response = new Response();
         StartUpEntity startup = startUpRepo.findById(startupId).orElse(null);
         // Handle startup not found error
         if (startup == null) {
