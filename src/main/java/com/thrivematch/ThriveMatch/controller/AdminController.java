@@ -117,13 +117,13 @@ public class AdminController {
 
     @PreAuthorize(("hasRole('admin')"))
     @PutMapping("/update_startup/{startupId}")
-    public ResponseEntity<Response> UpdateStartup(@RequestHeader(name = "Authorization") String token, AdminUpdateStartUp updateStartUp, @PathVariable Integer startupId){
+    public ResponseEntity<Response> UpdateStartup(@RequestHeader(name = "Authorization") String token, @RequestBody AdminUpdateStartUp updateStartUp, @PathVariable Integer startupId){
         return adminService.UpdateStartUp(startupId, updateStartUp);
     }
 
     @PreAuthorize(("hasRole('admin')"))
     @PutMapping("/update_investor/{investorId}")
-    public ResponseEntity<Response> UpdateInvestor(@RequestHeader(name = "Authorization") String token, AdminUpdateStartUp updateStartUp, @PathVariable Integer investorId){
+    public ResponseEntity<Response> UpdateInvestor(@RequestHeader(name = "Authorization") String token, @RequestBody AdminUpdateStartUp updateStartUp, @PathVariable Integer investorId){
         return adminService.UpdateInvestor(investorId, updateStartUp);
     }
 

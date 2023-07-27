@@ -13,6 +13,4 @@ public class AdminUpdateStartUp {
     private String industry;
     private String address;
     private String poBox;
-    private String year;
-    private MultipartFile  file;
 }

@@ -287,7 +287,6 @@ public class AdminService {
                 startUpDetail.setId(startUp.getId());
                 startUpDetail.setName(startUp.getName());
                 startUpDetail.setIndustry(startUp.getIndustry());
-                startUpDetail.setAddress(startUp.getAddress());
                 startUpDetail.setLocation(startUp.getAddress());
                 startUpDetail.setEmail(startUp.getEmail());
                 startUpDetail.setDateCreated(startUp.getDateCreated());
@@ -310,7 +309,6 @@ public class AdminService {
             response.setMessage("Startup does not exist");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        String image = imageService.uploadFile(updateStartUp.getFile());
         StartUpEntity startup = startUp.get();
         startup.setName(updateStartUp.getName());
         startup.setDescription(updateStartUp.getDescription());
@@ -318,11 +316,10 @@ public class AdminService {
         startup.setIndustry(updateStartUp.getIndustry());
         startup.setAddress(updateStartUp.getAddress());
         startup.setPoBox(updateStartUp.getPoBox());
-        startup.setPicturePath(image);
 
         startUpRepo.save(startup);
         response.setSuccess(true);
-        response.setMessage("Startup update successfully");
+        response.setMessage("Startup updated successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -335,7 +332,6 @@ public class AdminService {
             response.setMessage("Investor does not exist");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        String image = imageService.uploadFile(updateStartUp.getFile());
         InvestorEntity investor1 = investor.get();
         investor1.setName(updateStartUp.getName());
         investor1.setDescription(updateStartUp.getDescription());
@@ -343,11 +339,10 @@ public class AdminService {
         investor1.setIndustry(updateStartUp.getIndustry());
         investor1.setAddress(updateStartUp.getAddress());
         investor1.setPoBox(updateStartUp.getPoBox());
-        investor1.setPicturePath(image);
 
         investorRepo.save(investor1);
         response.setSuccess(true);
-        response.setMessage("Investor update successfully");
+        response.setMessage("Investor updated successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
